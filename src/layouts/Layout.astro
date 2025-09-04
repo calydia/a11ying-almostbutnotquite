@@ -4,8 +4,6 @@ import LanguageSwitcher from '../components/LanguageSwitcher.astro';
 import SkipLink from '../components/SkipLink.astro';
 import MainNavigation from '../components/MainNavigation.astro';
 import MainImage from '../components/MainImage.astro';
-import Breadcrumb from '../components/Breadcrumb.astro';
-import SideMenu from '../components/SideMenu.astro';
 import Footer from '../components/Footer.astro';
 import { Icon } from 'astro-icon/components';
 
@@ -19,8 +17,7 @@ const { title, locale, metaDescription, engUrl, fiUrl, currentUrl, type, current
 
 const t = useTranslations(locale);
 
-const gridClass = (currentType !== "front" && currentUrl.includes('info/') === false && currentUrl.includes('search') === false && currentUrl.includes('haku') === false || currentUrl.includes('hakukone') === true) ? 'use-grid' : 'no-grid';
-const crumbClass = (currentType !== "front" && currentUrl.includes('info/') === false && currentUrl.includes('search') === false && currentUrl.includes('haku') === false || currentUrl.includes('hakukone') === true) ? 'crumb-grid' : 'crumb-no-grid';
+const gridClass = (currentType !== "front" && currentUrl.includes('info/') === false) ? 'use-grid' : 'no-grid';
 ---
 <html lang={ locale }>
   <head>
@@ -70,19 +67,12 @@ const crumbClass = (currentType !== "front" && currentUrl.includes('info/') === 
       <MainNavigation currentUrl={ currentUrl } locale={ locale } />
     </header>
     <MainImage />
-    { (currentType !== "front") ?
-      <Breadcrumb currentTitle={ title } currentUrl={ currentUrl } gridClass={crumbClass} type={ type } />
-    : null }
     <main class={`text-lg lg:text-xl mb-8 md:mb-12 max-w-7xl md:mx-auto ${gridClass}`}>
-      { (currentType !== "front" && !currentUrl.includes('/info/')) ?
-        <SideMenu currentUrl={ currentUrl } locale={ locale } />
-      : null }
       <slot />
     </main>
-    <slot name="blogs" />
     <Footer currentPage={ currentUrl } locale={ locale } />
     <div itemscope itemtype="https://schema.org/WebSite">
-      <meta itemprop="url" content="https://a11y.ing/"/>
+      <meta itemprop="url" content="https://wcag.a11y.ing/"/>
       <meta itemprop="name" content={ t('site-name') } />
     </div>  
   </body>
@@ -167,7 +157,7 @@ const crumbClass = (currentType !== "front" && currentUrl.includes('info/') === 
   footer .logo-dark {
     @apply h-auto w-24;
     @apply md:w-28;
-  }
+  } 
 
   p {
     @apply text-lg md:text-xl mb-8 leading-relaxed md:leading-relaxed font-light;
@@ -569,7 +559,7 @@ const crumbClass = (currentType !== "front" && currentUrl.includes('info/') === 
   .use-grid {
     grid-template-columns: 320px 1fr;
 
-    @apply md:grid;
+    @apply grid max-md:grid-cols-1;
   }
 
   .crumb-grid {
@@ -663,6 +653,37 @@ const crumbClass = (currentType !== "front" && currentUrl.includes('info/') === 
   .details-content p:last-of-type {
     @apply mb-0;
   }
+
+  .accordion-toggle[aria-expanded="false"] + .accordion-content {
+    @apply hidden invisible;
+  }
+
+  .accordion-toggle[aria-expanded="true"] .accordion-icon {
+    @apply rotate-180;
+  }
+
+  .card-heading {
+    @apply mb-4 text-lg font-bold font-heading relative mt-0;
+  }
+
+  .box-link {
+    @apply no-underline;
+    @apply hover:no-underline;
+  }
+
+  .box-link h2::before,
+  .box-link h3::before {
+    @apply hidden invisible;
+  }
+
+  .box-content p {
+    @apply text-base text-lt-gray dark:text-dk-gray;
+  }
+
+  .box-content p:last-of-type {
+    @apply mb-0;
+  }
+
 </style>
 
 <script>

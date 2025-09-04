@@ -6,7 +6,7 @@ import icon from "astro-icon";
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://a11y.ing/',
+  site: 'https://wcag.a11y.ing/',
   trailingSlash: 'always',
   integrations: [react(), tailwind(), icon()],
 });

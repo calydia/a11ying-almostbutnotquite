@@ -3,6 +3,7 @@ interface Props {
   global: boolean
   wrappedByKey?: string;
   lang?: string;
+  menu: boolean;
 }
 
 /**
@@ -17,6 +18,7 @@ export default async function fetchApi<T>({
   global,
   wrappedByKey,
   lang,
+  menu,
 }: Props): Promise<T> {
   if (endpoint.startsWith('/')) {
     endpoint = endpoint.slice(1);
@@ -36,6 +38,22 @@ export default async function fetchApi<T>({
 
   if (global) {
     url = new URL(`${import.meta.env.PUBLIC_PAYLOAD_URL}/api/globals/${endpoint}?${lang}`);
+  }
+
+  if (endpoint == 'criteria') {
+    url = new URL(`${import.meta.env.PUBLIC_PAYLOAD_URL}/api/${endpoint}?${lang}&sort=criterionSort`);
+  }
+
+  if (endpoint == 'guidelines') {
+    url = new URL(`${import.meta.env.PUBLIC_PAYLOAD_URL}/api/${endpoint}?${lang}&sort=guidelineNumber`);
+  }
+
+    if (endpoint == 'principles') {
+    url = new URL(`${import.meta.env.PUBLIC_PAYLOAD_URL}/api/${endpoint}?${lang}&sort=principleNumber`);
+  }
+
+  if (menu) {
+    url = new URL(`${import.meta.env.PUBLIC_PAYLOAD_URL}/api/globals/${endpoint}?${lang}&depth=2&draft=false&locale=en&trash=false`);
   }
 
   const res = await fetch(url.toString());

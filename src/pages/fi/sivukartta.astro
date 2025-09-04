@@ -1,0 +1,20 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import HumanSitemapPrinciples from '../../components/HumanSitemapPrinciples.astro'
+---
+
+<Layout currentType="front" title="Title" locale="fi" metaDescription="meta"
+  engUrl="sitemap" fiUrl="sivukartta"
+  alternateFi="fi/sivukartta" alternateEn="en/sitemap"
+  currentUrl="sivukartta"
+>
+  <div class="max-w-[1564px] mx-auto md:px-8-px">
+    <div class="text-lt-gray dark:text-dk-gray py-2 px-4-px max-w-xl mx-auto md:py-6 md:px-8-px lg:max-w-4xl">
+      <h1 id="skip-target">Title</h1>
+      <div class="text-xl bodytext">
+        Content  
+      </div>
+      <HumanSitemapPrinciples />
+    </div>
+  </div>
+</Layout>

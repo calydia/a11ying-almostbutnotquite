@@ -1,0 +1,29 @@
+---
+import fetchApi from '../lib/payload';
+import type Criterion from '../interfaces/wcag';
+
+const criteria = await fetchApi<Criterion[]>({
+  endpoint: 'criteria',
+  wrappedByKey: 'docs',
+  global: false,
+  lang: Astro.props.lang
+});
+
+const path = Astro.url.pathname.toString();
+
+const filterdedCriteria = criteria.filter((criterion: Criterion) => criterion.Guideline.guidelineNumber === Astro.props.guidelineNumber);
+---
+
+{filterdedCriteria.map((criterion) => {
+  const pathString = criterion.Principle.slug + '/' + criterion.Guideline.slug + '/' + criterion.slug;
+  const ariaCurrent = (path.includes(pathString)) ? 'page' : undefined;
+  return (
+    <li>
+      <a class="text-base block py-2.5 no-underline hover:underline" aria-current={ ariaCurrent }
+        href={`/${Astro.props.lang}/${criterion.Principle.slug}/${criterion.Guideline.slug}/${criterion.slug}/`}
+      >
+        { criterion.criterionNumber }{' '}{ criterion.title }
+      </a>
+    </li>
+  );
+})}

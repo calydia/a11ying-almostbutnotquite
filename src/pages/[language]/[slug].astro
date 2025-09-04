@@ -1,0 +1,63 @@
+---
+import fetchApi from '../../lib/payload';
+import Layout from '../../layouts/Layout.astro';
+import Guidelines from '../../components/Guidelines.astro';
+import SidebarMenu from '../../components/SidebarMenu.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import RichText from '../../components/RichText';
+
+import type Principle from '../../interfaces/wcag';
+
+export async function getStaticPaths() {
+  const pages = await fetchApi<Principle[]>({
+    endpoint: 'principles',
+    global: false,
+    wrappedByKey: 'docs',
+  });
+
+  const languages = ['en', 'fi'];
+
+  return pages.flatMap((page: Principle) =>
+    languages.map((lang) => ({
+      params: {
+        language: lang,
+        slug: page.slug[lang],
+      },
+      props: {
+        ...page,
+        lang,
+      },
+    }))
+  );
+}
+
+type Props = Principle;
+
+const page = Astro.props;
+const lang = page.lang;
+
+const nodes = (page.content[lang]) ? page.content[lang].root.children as RichTextNode[] : null;
+---
+
+<Layout type="other" metaDescription={ page.metaDescription[lang] } locale={ lang } title={ page.title[lang] }
+engUrl={ page.slug[lang] } fiUrl={ page.slug[lang] } currentUrl={ page.slug[lang] } currentSlug={ page.slug[lang] }
+alternateFi={`fi/${ page.slug['fi'] }`} alternateEn={`en/${ page.slug['en'] }`}
+>
+  <SidebarMenu principleNumber={ page.principleNumber } principleName={ page.title[lang] } />
+  <div class="max-w-[1564px] mx-auto md:px-8-px max-sm:order-1">
+    <div class="text-lt-gray dark:text-dk-gray py-2 px-4-px max-w-xl mx-auto md:py-6 md:px-8-px lg:max-w-4xl">
+      <Breadcrumb type="principle"
+        language={ lang }
+        currentNumber={ page.principleNumber }
+        currentPage={ page.title[lang] }
+      />
+      <h1 id="skip-target">{ page.principleNumber } { page.title[lang] }</h1>
+      {nodes &&        
+        <div class="text-xl bodytext"><RichText client:load nodes={nodes} lang={lang} /></div>
+      }
+      <Guidelines principleNumber={ page.principleNumber } lang={ lang } />
+    </div>
+  </div>
+</Layout>
+
+

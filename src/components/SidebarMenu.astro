@@ -1,0 +1,41 @@
+---
+import fetchApi from '../lib/payload';
+import type Guideline from '../interfaces/wcag';
+import SidebarMenuLinks from './SidebarMenuLinks.astro';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const guidelines = await fetchApi<Guideline[]>({
+  endpoint: 'guidelines',
+  wrappedByKey: 'docs',
+  global: false,
+  lang: lang
+});
+
+const filteredGuidelines = guidelines.filter((guideline: Guideline) => guideline.Principle.principleNumber === Astro.props.principleNumber);
+
+---
+
+<section class="max-w-xl mx-auto text-lt-gray dark:text-dk-gray max-md:order-2 max-md:px-4-px max-md:w-full">
+  <span id="side-menu-label" class="relative bg-lt-bg dark:bg-dk-blue-darkest text-lt-gray dark:text-dk-gray text-2xl mx-8 px-2 pb-2 block mb-[-3.5rem] mt-8">{ Astro.props.principleNumber } {Astro.props.principleName}</span>
+  <nav aria-label={ t('sidebar-menu-title') } class="sidebar-menu text-lt-gray dark:text-dk-gray pb-1 pt-6 px-2 mt-8 bg-lt-bg dark:bg-dk-blue-darkest my-12 border-solid border-l-8 border-t-2 border-b-2 border-r-2 rounded-3xl border-lt-code-border dark:border-dk-code-border">
+    <ul class="ml-2">
+      {filteredGuidelines.map((guideline) => {
+        return (
+          <li>
+            <a class="py-2 block no-underline hover:underline"
+              href={`/${lang}/${guideline.Principle.slug}/${guideline.slug}/`}
+            >
+              { guideline.guidelineNumber } { guideline.title }
+            </a>
+            <ul class="ml-2 mb-2">
+              <SidebarMenuLinks guidelineNumber={ guideline.guidelineNumber } lang={ lang } />
+            </ul>
+          </li>
+        );
+      })}
+    </ul>
+  </nav>
+</section>

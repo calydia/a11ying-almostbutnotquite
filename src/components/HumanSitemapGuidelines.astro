@@ -1,0 +1,32 @@
+---
+import fetchApi from '../lib/payload';
+import type Guideline from '../interfaces/wcag';
+import HumanSitemapCriteria from './HumanSitemapCriteria.astro';
+import { getLangFromUrl } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+
+const guidelines = await fetchApi<Guideline[]>({
+  endpoint: 'guidelines',
+  wrappedByKey: 'docs',
+  global: false,
+  lang: lang
+});
+
+const filterdedGuidelines = guidelines.filter((guideline: Guideline) => guideline.Principle.principleNumber === Astro.props.principleNumber);
+---
+
+{filterdedGuidelines.map((guideline) => {
+  return (
+    <li>
+      <a class="py-2 block"
+        href={`/${lang}/${guideline.Principle.slug}/${guideline.slug}/`}
+      >
+        {`${ guideline.guidelineNumber } ${ guideline.title[lang] }`}
+      </a>
+      <ul class="ml-2">
+        <HumanSitemapCriteria guidelineNumber={ guideline.guidelineNumber } lang={ lang } />
+      </ul>
+    </li>
+  );
+})}

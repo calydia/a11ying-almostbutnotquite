@@ -2,4 +2,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://a11y.ing/sitemap-index.xml
+Sitemap: https://wcag.a11y.ing/sitemap-index.xml

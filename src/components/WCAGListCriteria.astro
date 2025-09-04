@@ -1,0 +1,25 @@
+---
+import fetchApi from '../lib/payload';
+import type Criterion from '../interfaces/wcag';
+
+const criteria = await fetchApi<Criterion[]>({
+  endpoint: 'criteria',
+  wrappedByKey: 'docs',
+  global: false,
+  lang: Astro.props.lang
+});
+
+const filterdedCriteria = criteria.filter((criterion: Criterion) => criterion.Guideline.guidelineNumber === Astro.props.guidelineNumber);
+---
+
+{filterdedCriteria.map((criterion) => {
+  return (
+    <li>
+      <a class="text-base block py-2.5"
+        href={`/${Astro.props.lang}/${criterion.Principle.slug}/${criterion.Guideline.slug}/${criterion.slug}/`}
+      >
+        {`${ criterion.criterionNumber } ${ criterion.title } - ${ criterion.criterionLevel }`}
+      </a>
+    </li>
+  );
+})}

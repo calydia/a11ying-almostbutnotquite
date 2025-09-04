@@ -10,11 +10,6 @@
 
   let finnishUrl = (Astro.props.finnishURL === 'front') ? '/fi/' :  '/fi/' + Astro.props.finnishURL + '/';
   let englishUrl = (Astro.props.englishURL === 'front') ? '/en/' : '/en/' + Astro.props.englishURL + '/';
-
-  if (Astro.props.type === 'demo') {
-    finnishUrl = '/fi/demo/' + Astro.props.finnishURL + '/';
-    englishUrl = '/en/demo/' + Astro.props.englishURL + '/';
-  }
 ---
 
 <div id="language-switcher" class="lang-switcher text-black dark:text-white px-3 relative">

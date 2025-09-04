@@ -1,0 +1,40 @@
+---
+import fetchApi from '../lib/payload';
+import type Criterion from '../interfaces/wcag';
+
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const criteria = await fetchApi<Criterion[]>({
+  endpoint: 'criteria',
+  wrappedByKey: 'docs',
+  global: false,
+  lang: lang
+});
+
+const filterdedByGuideline = criteria.filter((criterion: Criterion) => criterion.Guideline.guidelineNumber === Astro.props.guidelineNumber);
+---
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:grid-cols-3">
+  {filterdedByGuideline.map((criterion) => {
+    return (
+      <a href={`/${lang}/${criterion.Principle.slug}/${criterion.Guideline.slug}/${criterion.slug}/`}
+        class="box-link block border-l-4 border-lt-blue-dark dark:border-dk-blue-light pl-8 hover:border-l-8 hover:border-lt-purple dark:hover:border-wheat hover:pl-7"
+      >
+        {(Astro.props.linkLevel == 'two') ?
+          <h2 class="card-heading">{ criterion.criterionNumber } { criterion.title }</h2>
+        :
+          <h3 class="card-heading">{ criterion.criterionNumber } { criterion.title[lang] }</h3>
+        }
+        <div class="box-content">
+          <p class="mb-1">{ t('wcag-level') } {criterion.criterionLevel}</p>
+          {(criterion.cardContent) &&
+            <p><Fragment set:html={ criterion.cardContent } /></p>
+          }          
+        </div>
+      </a>
+    );
+  })}
+</div>

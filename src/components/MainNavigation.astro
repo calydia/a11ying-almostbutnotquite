@@ -1,5 +1,6 @@
 ---
-import type { MainMenuItem } from '../interfaces/menuInterfaces';
+import fetchApi from '../lib/payload';
+import type { MainMenu, MainMenuItem } from '../interfaces/menuInterfaces';
 import { Icon } from 'astro-icon/components';
 
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
@@ -8,10 +9,12 @@ const t = useTranslations(lang);
 
 const asPath = Astro.props.currentUrl;
 
-const fetchUrl = (Astro.props.locale == 'en') ? 'http://localhost:3000/api/globals/mainNav?depth=2&draft=false&locale=en&trash=false' : 'http://localhost:3000/api/globals/mainNav?depth=2&draft=false&locale=fi&trash=false';
-
-const mainMenu = await fetch(fetchUrl);
-const menuItems = await mainMenu.json();
+const menuItems = await fetchApi<MainMenu>({
+  endpoint: 'WCAGNav',
+  global: true,
+  menu: true,
+  lang: lang,
+});
 ---
 
 <nav id="main-menu-nav" aria-labelledby="main-menu-label" class="text-black dark:text-white py-1 mt-2 nav-bar">
@@ -55,7 +58,9 @@ const menuItems = await mainMenu.json();
                       // If the second level element is a button
                       ?
                         <li class="relative"> 
-                            <button aria-expanded="true" class="mobile-menu-toggle w-full flex items-center text-black dark:text-white" aria-controls={`menu-button-lower-${secondIndex}-${titleModified}`}>  
+                            <button aria-expanded="true" class="mobile-menu-toggle w-full flex items-center text-black dark:text-white"
+                              aria-controls={`menu-button-lower-${secondIndex}-${titleModified}`}
+                            >  
                               <span id={`subMenuItem-heading-${secondIndex}-${titleModified}`}
                                 class={`sub-header flex gap-2 items-center text-lg p-1 mt-0 text-black font-menu dark:text-white ${secondLevelItem.iconClass} max-lg:mt-2 max-lg:mb-1.5`}>
                                 <Icon name={secondLevelItem.iconClass} class="menu-icon" />
@@ -110,7 +115,7 @@ const menuItems = await mainMenu.json();
                       :
                       <li class="my-1.5">
                         {secondLevelItem.menuLink &&
-                          <a href={`/${lang}${secondLevelItem.menuLink.pageUrl}/`} aria-current={ariaCurrentPage}
+                          <a href={`/${lang}/${secondLevelItem.menuLink.pageUrl}/`} aria-current={ariaCurrentPage}
                             class={`text-md p-1 block main-menu-link first-letter:capitalize ${activeClass}`}
                           >
                             { secondLevelItem.menuLink.title }
@@ -125,9 +130,11 @@ const menuItems = await mainMenu.json();
             </li>
           // If the first level element is a link
           :
-            <li class="my-1.5">
+            <li class="m-2 p-1">
               {menuItem.menuLink &&
-                <a href={`/${lang}${menuItem.menuLink.pageUrl}/`}>
+                <a href={`/${lang}/${menuItem.menuLink.pageUrl}/`}
+                  class="text-lg"
+                >
                   { menuItem.menuLink.title }
                 </a>
               }

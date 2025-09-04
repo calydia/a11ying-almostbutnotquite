@@ -1,0 +1,27 @@
+---
+import fetchApi from '../lib/payload';
+import type Principle from '../interfaces/wcag';
+import WCAGListGuidelines from './WCAGListGuidelines.astro';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const principles = await fetchApi<Principle[]>({
+  endpoint: 'principles',
+  wrappedByKey: 'docs',
+  global: false,
+  lang: lang
+});
+---
+
+<section class="text-lt-gray dark:text-dk-gray">
+  {principles.map((principle) => {
+    return (
+      <h2>{ principle.title }</h2>
+      <div>
+        <WCAGListGuidelines principleNumber={ principle.principleNumber } />
+      </div>
+    );
+  })}
+</section>
