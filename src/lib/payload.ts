@@ -3,7 +3,7 @@ interface Props {
   global: boolean
   wrappedByKey?: string;
   lang?: string;
-  menu: boolean;
+  menu?: boolean;
 }
 
 /**

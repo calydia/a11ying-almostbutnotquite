@@ -19,7 +19,7 @@ export interface FooterMenuItem {
 }
 
 export interface MainMenu {
-  navigationLinks: [
+  firstLevel: [
     {
       element: string,
       iconClass?: string,
