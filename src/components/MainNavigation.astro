@@ -10,7 +10,7 @@ const t = useTranslations(lang);
 const asPath = Astro.props.currentUrl;
 
 const menuItems = await fetchApi<MainMenu>({
-  endpoint: 'WCAGNav',
+  endpoint: 'ReqNav',
   global: true,
   menu: true,
   lang: lang,
@@ -63,7 +63,9 @@ const menuItems = await fetchApi<MainMenu>({
                             >  
                               <span id={`subMenuItem-heading-${secondIndex}-${titleModified}`}
                                 class={`sub-header flex gap-2 items-center text-lg p-1 mt-0 text-black font-menu dark:text-white ${secondLevelItem.iconClass} max-lg:mt-2 max-lg:mb-1.5`}>
-                                <Icon name={secondLevelItem.iconClass} class="menu-icon" />
+                                { secondLevelItem.iconClass &&
+                                  <Icon name={secondLevelItem.iconClass} class="menu-icon" />
+                                }
                                 <span class="main-menu-heading first-letter:capitalize flex-grow text-left">{ secondLevelItem.button }</span>
                               </span>
                               <Icon name="plus-solid" class="h-6 w-6 icon--plus md:h-4 md:w-4" aria-hidden="true" />
@@ -86,7 +88,9 @@ const menuItems = await fetchApi<MainMenu>({
                                       <button aria-expanded="true" class="mobile-menu-toggle w-full flex items-center text-black dark:text-white" aria-controls={`menu-button-lower-${thirdIndex}-${titleModified}`}>  
                                         <span id={`subMenuItem-heading-${thirdIndex}-${titleModified}`}
                                           class={`sub-header flex gap-2 items-center text-lg p-1 mt-0 text-black font-menu dark:text-white ${thirdLevelItem.iconClass} max-lg:mt-2 max-lg:mb-1.5`}>
-                                          <Icon name={thirdLevelItem.iconClass} class="menu-icon" />
+                                          { thirdLevelItem.iconClass &&
+                                            <Icon name={thirdLevelItem.iconClass} class="menu-icon" />
+                                          }
                                           <span class="main-menu-heading first-letter:capitalize flex-grow text-left">{ thirdLevelItem.button }</span>
                                         </span>
                                         <Icon name="plus-solid" class="h-6 w-6 icon--plus md:h-4 md:w-4" aria-hidden="true" />

@@ -6,12 +6,13 @@ const criteria = await fetchApi<Criterion[]>({
   endpoint: 'criteria',
   wrappedByKey: 'docs',
   global: false,
-  lang: Astro.props.lang
+  lang: Astro.props.lang,
 });
 
 const path = Astro.url.pathname.toString();
 
 const filterdedCriteria = criteria.filter((criterion: Criterion) => criterion.Guideline.guidelineNumber === Astro.props.guidelineNumber);
+
 ---
 
 {filterdedCriteria.map((criterion) => {

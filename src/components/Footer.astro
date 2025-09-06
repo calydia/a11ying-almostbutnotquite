@@ -9,7 +9,7 @@ const t = useTranslations(lang);
 import { Icon } from 'astro-icon/components';
 
 const menuItems = await fetchApi<FooterMenu>({
-  endpoint: 'WCAGFooterNav',
+  endpoint: 'ReqFooterNav',
   global: true,
   menu: true,
   lang: lang,

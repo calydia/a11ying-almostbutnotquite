@@ -4,6 +4,8 @@ interface Props {
   wrappedByKey?: string;
   lang?: string;
   menu?: boolean;
+  guideline?: string;
+  principle?: string;
 }
 
 /**
@@ -19,6 +21,8 @@ export default async function fetchApi<T>({
   wrappedByKey,
   lang,
   menu,
+  guideline,
+  principle,
 }: Props): Promise<T> {
   if (endpoint.startsWith('/')) {
     endpoint = endpoint.slice(1);
@@ -41,15 +45,15 @@ export default async function fetchApi<T>({
   }
 
   if (endpoint == 'criteria') {
-    url = new URL(`${import.meta.env.PUBLIC_PAYLOAD_URL}/api/${endpoint}?${lang}&sort=criterionSort`);
+    url = new URL(`${import.meta.env.PUBLIC_PAYLOAD_URL}/api/${endpoint}?${lang}&sort=criterionSort&limit=200`);
   }
 
   if (endpoint == 'guidelines') {
-    url = new URL(`${import.meta.env.PUBLIC_PAYLOAD_URL}/api/${endpoint}?${lang}&sort=guidelineNumber`);
+    url = new URL(`${import.meta.env.PUBLIC_PAYLOAD_URL}/api/${endpoint}?${lang}&sort=guidelineNumber&limit=200`);
   }
 
     if (endpoint == 'principles') {
-    url = new URL(`${import.meta.env.PUBLIC_PAYLOAD_URL}/api/${endpoint}?${lang}&sort=principleNumber`);
+    url = new URL(`${import.meta.env.PUBLIC_PAYLOAD_URL}/api/${endpoint}?${lang}&sort=principleNumber&limit=200`);
   }
 
   if (menu) {

@@ -11,7 +11,7 @@ const guidelines = await fetchApi<Guideline[]>({
   endpoint: 'guidelines',
   wrappedByKey: 'docs',
   global: false,
-  lang: lang
+  lang: lang,
 });
 
 const filteredGuidelines = guidelines.filter((guideline: Guideline) => guideline.Principle.principleNumber === Astro.props.principleNumber);

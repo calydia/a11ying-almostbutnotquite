@@ -7,4 +7,9 @@ export default interface FrontPage {
     en: string,
     fi: string,
   },
+  content: {
+    root: {
+      children: {}
+    }
+  }
 }
