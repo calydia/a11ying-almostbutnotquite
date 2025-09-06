@@ -37,7 +37,7 @@ const currentPath = '/' + Astro.props.currentPage;
             { menuItem.iconClass &&
               <Icon name={menuItem.iconClass} class="h-8 w-8" />
             }
-            <a href={`/${lang}${menuItem.menuLink?.pageUrl}/`} aria-current={ariaCurrentPage} class={`${activeClass} py-3`}
+            <a href={`/${lang}/${menuItem.menuLink?.pageUrl}/`} aria-current={ariaCurrentPage} class={`${activeClass} py-3`}
             >
               {menuItem.menuLink?.title}
             </a>

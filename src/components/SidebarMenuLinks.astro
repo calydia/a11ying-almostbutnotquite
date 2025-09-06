@@ -21,7 +21,7 @@ const filterdedCriteria = criteria.filter((criterion: Criterion) => criterion.Gu
   return (
     <li>
       <a class="text-base block py-2.5 no-underline hover:underline" aria-current={ ariaCurrent }
-        href={`/${Astro.props.lang}/${criterion.Principle.slug}/${criterion.Guideline.slug}/${criterion.slug}/`}
+        href={`/${Astro.props.lang}/wcag/${criterion.Principle.slug}/${criterion.Guideline.slug}/${criterion.slug}/`}
       >
         { criterion.criterionNumber }{' '}{ criterion.title }
       </a>

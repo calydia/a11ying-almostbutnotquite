@@ -20,7 +20,7 @@ const filterdedByGuideline = criteria.filter((criterion: Criterion) => criterion
 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:grid-cols-3">
   {filterdedByGuideline.map((criterion) => {
     return (
-      <a href={`/${lang}/${criterion.Principle.slug}/${criterion.Guideline.slug}/${criterion.slug}/`}
+      <a href={`/${lang}/wcag/${criterion.Principle.slug}/${criterion.Guideline.slug}/${criterion.slug}/`}
         class="box-link block border-l-4 border-lt-blue-dark dark:border-dk-blue-light pl-8 hover:border-l-8 hover:border-lt-purple dark:hover:border-wheat hover:pl-7"
       >
         {(Astro.props.linkLevel == 'two') ?

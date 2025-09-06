@@ -18,16 +18,16 @@ const principles = await fetchApi<Principle[]>({
 <section class="text-lt-gray dark:text-dk-gray">
   <span id="side-menu-label" class="relative bg-white dark:bg-dk-blue-darkest text-lt-gray dark:text-dk-gray text-2xl mx-8 px-2 pb-2 block mb-[-3.5rem] mt-8">{ Astro.props.principleNumber } {Astro.props.principleName}</span>
   <nav aria-label={ t('sidebar-menu-title') } class="sidebar-menu text-lt-gray dark:text-dk-gray pb-1 pt-6 px-2 mt-8 bg-white dark:bg-dk-blue-darkest my-12">
-    <ul class="ml-2">
+    <ul class="ml-2 list-disc">
       {principles.map((principle) => {
         return (
           <li>
             <a class="py-2 block"
-              href={`/${lang}/${principle.slug}/`}
+              href={`/${lang}/wcag/${principle.slug}/`}
             >
               { principle.principleNumber } { principle.title }
             </a>
-            <ul class="ml-2">
+            <ul class="ml-2 list-disc">
               <HumanSitemapGuidelines principleNumber={ principle.principleNumber } />
             </ul>
           </li>

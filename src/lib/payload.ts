@@ -6,6 +6,7 @@ interface Props {
   menu?: boolean;
   guideline?: string;
   principle?: string;
+  sort?: string;
 }
 
 /**
@@ -21,8 +22,7 @@ export default async function fetchApi<T>({
   wrappedByKey,
   lang,
   menu,
-  guideline,
-  principle,
+  sort
 }: Props): Promise<T> {
   if (endpoint.startsWith('/')) {
     endpoint = endpoint.slice(1);
@@ -38,7 +38,12 @@ export default async function fetchApi<T>({
     lang = 'locale=*';
   }
 
-  let url = new URL(`${import.meta.env.PUBLIC_PAYLOAD_URL}/api/${endpoint}?${lang}`);
+  let sortValue = '';
+  if (sort) {
+    sortValue = '&sort' + sort;
+  }
+
+  let url = new URL(`${import.meta.env.PUBLIC_PAYLOAD_URL}/api/${endpoint}?${lang}${sortValue}&limit="2000`);
 
   if (global) {
     url = new URL(`${import.meta.env.PUBLIC_PAYLOAD_URL}/api/globals/${endpoint}?${lang}`);

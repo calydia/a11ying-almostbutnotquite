@@ -2,6 +2,7 @@
 import fetchApi from '../lib/payload';
 import type Guideline from '../interfaces/wcag';
 import Criteria from './Criteria.astro';
+import RichText from './RichText';
 
 const guidelines = await fetchApi<Guideline[]>({
   endpoint: 'guidelines',
@@ -15,10 +16,13 @@ const filterdedGuidelines = guidelines.filter((guideline: Guideline) => guidelin
 
 <section>
   {filterdedGuidelines.map((guideline) => {
+    const nodes = (guideline.content) ? guideline.content.root.children as RichTextNode[] : null;
     return (
       <div>
         <h2>{ guideline.guidelineNumber } { guideline.title }</h2>
-        <div class="text-xl bodytext mb-8">Tähän sivun content</div>
+        {nodes &&
+          <div class="text-xl bodytext"><RichText client:load nodes={nodes} lang={Astro.props.lang} /></div>
+        }
         <Criteria principleNumber={ Astro.props.principleNumber } guidelineNumber={ guideline.guidelineNumber } />
       </div>
     );

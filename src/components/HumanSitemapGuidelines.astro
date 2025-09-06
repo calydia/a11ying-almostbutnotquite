@@ -20,11 +20,11 @@ const filterdedGuidelines = guidelines.filter((guideline: Guideline) => guidelin
   return (
     <li>
       <a class="py-2 block"
-        href={`/${lang}/${guideline.Principle.slug}/${guideline.slug}/`}
+        href={`/${lang}/wcag/${guideline.Principle.slug}/${guideline.slug}/`}
       >
         {`${ guideline.guidelineNumber } ${ guideline.title[lang] }`}
       </a>
-      <ul class="ml-2">
+      <ul class="ml-2 list-disc">
         <HumanSitemapCriteria guidelineNumber={ guideline.guidelineNumber } lang={ lang } />
       </ul>
     </li>

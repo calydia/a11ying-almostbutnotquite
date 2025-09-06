@@ -76,8 +76,8 @@ const menuItems = await fetchApi<MainMenu>({
                           <ul id={`menu-button-lower-${secondIndex}-${titleModified}`} aria-labelledby={`subMenuItem-heading-${secondIndex}-${titleModified}`}
                               class="ml-3 menu-lower-level lg:ml-8">
                             {secondLevelItem.thirdLevel && secondLevelItem.thirdLevel.map((thirdLevelItem: MainMenuItem, thirdIndex: number) => {
-                                const activeClassLower = (asPath === thirdLevelItem.menuLink?.pageUrl) ? 'active-link': 'non-active-link';
-                                const ariaCurrentPageLower = (asPath === thirdLevelItem.menuLink?.pageUrl && thirdLevelItem.menuLink?.pageUrl !== '/') ? 'page' : undefined;
+                                const activeClassLower = (asPath === thirdLevelItem.menuLink?.value.pageUrl) ? 'active-link': 'non-active-link';
+                                const ariaCurrentPageLower = (asPath === thirdLevelItem.menuLink?.value.pageUrl && thirdLevelItem.menuLink?.value.pageUrl !== '/') ? 'page' : undefined;
 
                               return (
                                 <Fragment key={`fragment-sub-${thirdIndex}`}>
@@ -102,10 +102,10 @@ const menuItems = await fetchApi<MainMenu>({
                                   :
                                     <li class="my-1.5">
                                       {thirdLevelItem.menuLink &&
-                                        <a href={`/${lang}/${thirdLevelItem.menuLink.pageUrl}/`} aria-current={ariaCurrentPageLower}
+                                        <a href={`/${lang}/${thirdLevelItem.menuLink.value.pageUrl}/`} aria-current={ariaCurrentPageLower}
                                           class={`text-md p-1 block main-menu-link first-letter:capitalize ${activeClassLower}`}
                                         >
-                                          { thirdLevelItem.menuLink.title }
+                                          { thirdLevelItem.menuLink.value.title }
                                         </a>
                                       }
                                     </li>
@@ -119,10 +119,10 @@ const menuItems = await fetchApi<MainMenu>({
                       :
                       <li class="my-1.5">
                         {secondLevelItem.menuLink &&
-                          <a href={`/${lang}/${secondLevelItem.menuLink.pageUrl}/`} aria-current={ariaCurrentPage}
+                          <a href={`/${lang}/${secondLevelItem.menuLink.value.pageUrl}/`} aria-current={ariaCurrentPage}
                             class={`text-md p-1 block main-menu-link first-letter:capitalize ${activeClass}`}
                           >
-                            { secondLevelItem.menuLink.title }
+                            { secondLevelItem.menuLink.value.title }
                           </a>
                         }
                       </li>

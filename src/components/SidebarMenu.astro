@@ -27,7 +27,7 @@ const filteredGuidelines = guidelines.filter((guideline: Guideline) => guideline
         return (
           <li>
             <a class="py-2 block no-underline hover:underline"
-              href={`/${lang}/${guideline.Principle.slug}/${guideline.slug}/`}
+              href={`/${lang}/wcag/${guideline.Principle.slug}/${guideline.slug}/`}
             >
               { guideline.guidelineNumber } { guideline.title }
             </a>

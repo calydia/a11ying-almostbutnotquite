@@ -1,12 +1,12 @@
 ---
-import fetchApi from '../../lib/payload';
-import Layout from '../../layouts/Layout.astro';
-import Guidelines from '../../components/Guidelines.astro';
-import SidebarMenu from '../../components/SidebarMenu.astro';
-import Breadcrumb from '../../components/Breadcrumb.astro';
-import RichText from '../../components/RichText';
+import fetchApi from '../../../lib/payload';
+import Layout from '../../../layouts/Layout.astro';
+import Guidelines from '../../../components/Guidelines.astro';
+import SidebarMenu from '../../../components/SidebarMenu.astro';
+import Breadcrumb from '../../../components/Breadcrumb.astro';
+import RichText from '../../../components/RichText';
 
-import type Principle from '../../interfaces/wcag';
+import type Principle from '../../../interfaces/wcag';
 
 export async function getStaticPaths() {
   const pages = await fetchApi<Principle[]>({

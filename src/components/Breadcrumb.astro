@@ -20,7 +20,7 @@ const pageType = Astro.props.type;
     {(pageType === 'guideline' || pageType === 'criterion') ?
       <li class="inline">
         <span class="mx-2 text-base">/</span>
-        <a class="text-base" href={`/${navLanguage}/${Astro.props.principleSlug}/`}>
+        <a class="text-base" href={`/${navLanguage}/wcag/${Astro.props.principleSlug}/`}>
           { Astro.props.principleNumber} { Astro.props.principleName }
         </a>
       </li>
@@ -29,7 +29,7 @@ const pageType = Astro.props.type;
     {(pageType === 'criterion') ?
     <li class="inline">
       <span class="mx-2 text-base">/</span>
-      <a class="text-base" href={`/${navLanguage}/${Astro.props.principleSlug}/${Astro.props.guidelineSlug}/`}>
+      <a class="text-base" href={`/${navLanguage}/wcag/${Astro.props.principleSlug}/${Astro.props.guidelineSlug}/`}>
         { Astro.props.guidelineNumber} { Astro.props.guidelineName }
       </a>
     </li>
