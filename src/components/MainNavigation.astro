@@ -31,7 +31,6 @@ const menuItems = await fetchApi<MainMenu>({
     max-lg:absolute max-lg:z-20 lg:w-[90%] max-lg:mx-auto max-lg:left-0 max-lg:right-0 max-lg:p-4 max-lg:border-2 max-lg:border-solid max-lg:border-black max-lg:dark:border-white max-lg:bg-lt-code-bg max-lg:dark:bg-dk-code-bg"
   >
     {menuItems.firstLevel.map((menuItem: MainMenuItem, index: number) => {
-      const ariaCurrentPath = (asPath.includes(menuItem.mainPath) && menuItem.mainPath !== '/') ? true : undefined;
 
       return (
         <Fragment key={`fragment-${index}`}>
@@ -48,8 +47,8 @@ const menuItems = await fetchApi<MainMenu>({
               <ul id={`menu-button-${index}`}
                   class="menu-button-ul ml-2 lg:absolute lg:mt-6 lg:z-20 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-8 lg:w-[100%] lg:max-w-screen-menu lg:mx-auto lg:left-0 lg:right-0 lg:p-4 lg:border-t-8 lg:border-solid lg:border-black lg:dark:border-white lg:bg-lt-code-bg lg:dark:bg-dk-code-bg">
                 {menuItem.secondLevel && menuItem.secondLevel.map((secondLevelItem: MainMenuItem, secondIndex: number) => {
-                  const activeClass = (asPath === secondLevelItem.menuLink?.pageUrl) ? 'active-link': 'non-active-link';
-                  const ariaCurrentPage = (asPath === secondLevelItem.menuLink?.pageUrl) ? 'page' : undefined;
+                  const activeClass = (asPath === secondLevelItem.menuLink?.value.pageUrl) ? 'active-link': 'non-active-link';
+                  const ariaCurrentPage = (asPath === secondLevelItem.menuLink?.value.pageUrl) ? 'page' : undefined;
                   const titleModified = secondLevelItem.button?.replace(/\s+/g, '-').toLowerCase();
                   
                   return (

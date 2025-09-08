@@ -49,13 +49,13 @@ const leadNodes = (page.lead[lang]) ? page.lead[lang].root.children as RichTextN
       <h1 id="skip-target">{ page.title[lang] }</h1>
 
       {leadNodes &&
-        <div class="text-xl bodytext"><RichText client:load nodes={leadNodes} lang={lang} /></div>
+        <div class="text-xl bodytext"><RichText client:load nodes={leadNodes} lang={lang} withTOC={false} /></div>
       }
       
       {nodes &&
         <RichText client:load nodes={nodes} lang={lang} withTOC={true} />
         
-        <div class="text-xl bodytext"><RichText client:load nodes={nodes} lang={lang} /></div>
+        <div class="text-xl bodytext"><RichText client:load nodes={nodes} lang={lang} withTOC={false} /></div>
       }
     
     { (page.slug[lang] === "sitemap" || page.slug[lang] === 'sivukartta') ?

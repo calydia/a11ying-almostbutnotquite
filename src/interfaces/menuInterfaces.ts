@@ -3,8 +3,10 @@ export interface FooterMenu {
     {
       iconClass: string,
       menuLink?: {
-        title: string,
-        pageUrl: string,
+        value: {
+          title: string,
+          pageUrl: string,
+        }
       }
     }
   ]
@@ -13,8 +15,10 @@ export interface FooterMenu {
 export interface FooterMenuItem {
   iconClass: string,
   menuLink?: {
-    title: string,
-    pageUrl: string,
+    value: {
+      title: string,
+      pageUrl: string,
+    }
   }
 }
 
@@ -26,8 +30,10 @@ export interface MainMenu {
       button?: string,
       mainPath?: string,
       menuLink?: {
-        title: string,
-        pageUrl: string,
+        value: {
+          title: string,
+          pageUrl: string,
+        }
       }
       secondLevel?: MainMenuItem[],
       thirdLevel?: MainMenuItem[]
@@ -41,8 +47,10 @@ export interface MainMenuItem {
   button?: string,
   mainPath?: string,
   menuLink?: {
-    title: string,
-    pageUrl: string,
+    value: {
+      title: string,
+      pageUrl: string,
+    }
   }
   secondLevel?: MainMenuItem[],
   thirdLevel?: MainMenuItem[]
