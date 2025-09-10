@@ -7,6 +7,7 @@ interface Props {
   guideline?: string;
   principle?: string;
   sort?: string;
+  searchString?: string;
 }
 
 /**
@@ -22,7 +23,8 @@ export default async function fetchApi<T>({
   wrappedByKey,
   lang,
   menu,
-  sort
+  sort,
+  searchString
 }: Props): Promise<T> {
   if (endpoint.startsWith('/')) {
     endpoint = endpoint.slice(1);
@@ -63,6 +65,10 @@ export default async function fetchApi<T>({
 
   if (menu) {
     url = new URL(`${import.meta.env.PUBLIC_PAYLOAD_URL}/api/globals/${endpoint}?${lang}&depth=2&draft=false&locale=en&trash=false`);
+  }
+
+  if (endpoint == 'search') {
+    url = new URL(`${import.meta.env.PUBLIC_PAYLOAD_URL}/api/${endpoint}?${lang}$&${searchString}&pagination=false`);
   }
 
   const res = await fetch(url.toString());

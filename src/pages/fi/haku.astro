@@ -1,0 +1,19 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SearchComponent from '../../components/SearchComponent';
+---
+<Layout title="Sivustohaku" locale="fi" metaDescription="Käytä sivustohakua sisällön löytämiseen. Sivustohaku mahdollistaa hakemisen molemmilla kielillä."
+  engUrl="search" fiUrl="haku" currentUrl="haku" currentSlug="haku" alternateFi="fi/haku" alternateEn="en/search" type="search"
+  >
+  <div class="max-w-[1564px] mx-auto md:px-8-px">
+    <div class="text-lt-gray dark:text-dk-gray py-2 px-4-px max-w-xl mx-auto md:py-6 md:px-8-px lg:max-w-4xl">
+      <h1 id="skip-target">Sivustohaku</h1>
+      <pp class="mb-0">Haku hakee kaikista A11ying with Sanna -sisällöistä.</p>
+    </div>
+    <SearchComponent client:load searchLabel="Hae sisältöä" searchButton="Hae" 
+      searchResultLabel="tulosta" searchNoResults="Ei tuloksia."
+      searchMainHeading="Hakutulokset haulle:" searchLocale="fi"
+      searchSiteName="Sivusto: " searchContentType="Sisällön tyyppi: "
+    />
+  </div>
+</Layout>

@@ -6,6 +6,7 @@ import MainNavigation from '../components/MainNavigation.astro';
 import MainImage from '../components/MainImage.astro';
 import Footer from '../components/Footer.astro';
 import { Icon } from 'astro-icon/components';
+import SearchBlock from '../components/SearchBlock.astro';
 
 import { useTranslations } from '../i18n/utils';
 
@@ -17,7 +18,7 @@ const { title, locale, metaDescription, engUrl, fiUrl, currentUrl, type, current
 
 const t = useTranslations(locale);
 
-const gridClass = (currentType !== "front" && currentUrl.includes('info/') === false) ? 'use-grid' : 'no-grid';
+const gridClass = (currentType !== "front" && currentUrl.includes('info/') === false && currentUrl.includes('search') === false && currentUrl.includes('haku') === false) ? 'use-grid' : 'no-grid';
 ---
 <html lang={ locale }>
   <head>
@@ -47,7 +48,7 @@ const gridClass = (currentType !== "front" && currentUrl.includes('info/') === f
       dark:from-dk-purple-header dark:via-dk-blue-header dark:to-dk-purple-header">
       <SkipLink skipId="skip" skipTarget="#skip-target" skipTextVariable="skip-link-text" />
       <div class="flex flex-wrap justify-end gap-1">
-        <!-- <SearchBlock locale={locale} /> -->
+        <SearchBlock locale={locale} />
         <LanguageSwitcher englishURL={ engUrl } finnishURL={ fiUrl } currentPage={ currentUrl } type={ type } />
         <ThemeToggle />
       </div>
@@ -226,7 +227,7 @@ const gridClass = (currentType !== "front" && currentUrl.includes('info/') === f
 
     @apply bg-lt-perfume dark:bg-dk-purple-header absolute block z-[-1] bottom-0 w-10 h-2.5;
   }
-
+  .search-heading::before,
   .a11y-heading::before {
     @apply hidden invisible;  
   }
