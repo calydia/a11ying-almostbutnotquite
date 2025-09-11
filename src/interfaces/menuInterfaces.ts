@@ -15,10 +15,8 @@ export interface FooterMenu {
 export interface FooterMenuItem {
   iconClass: string,
   menuLink?: {
-    value: {
-      title: string,
-      pageUrl: string,
-    }
+    title: string,
+    pageUrl: string,
   }
 }
 
@@ -29,6 +27,7 @@ export interface MainMenu {
       iconClass?: string,
       button?: string,
       mainPath?: string,
+      menuPath?: string,
       menuLink?: {
         value: {
           title: string,
@@ -46,6 +45,7 @@ export interface MainMenuItem {
   iconClass?: string,
   button?: string,
   mainPath?: string,
+  menuPath?: string,
   menuLink?: {
     value: {
       title: string,
