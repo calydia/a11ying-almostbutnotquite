@@ -1,6 +1,6 @@
 ---
 import fetchApi from '../lib/payload';
-import type Criterion from '../interfaces/wcag';
+import type { Criterion } from '../interfaces/wcag';
 
 const criteria = await fetchApi<Criterion[]>({
   endpoint: 'criteria',

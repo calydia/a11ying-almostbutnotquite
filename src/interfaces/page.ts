@@ -1,19 +1,21 @@
+import type RichTextNode from './RichText';
+
+export type LocalizedField = {
+  fi: string;
+  en: string;
+};
+
+export type RichTextField = {
+  fi: { root: { children: RichTextNode[] } } | null;
+  en: { root: { children: RichTextNode[] } } | null;
+};
+
 export default interface Page {
   id: number,
-  slug: {
-    en: string,
-    fi: string
-  }, 
-  pageUrl: {
-    en: string,
-    fi: string,
-  },
-  title: {
-    en: string,
-    fi: string,
-  },
-  metaDescription: {
-    en: string,
-    fi: string,
-  },
+  slug: LocalizedField, 
+  pageUrl: LocalizedField,
+  title: LocalizedField,
+  metaDescription: LocalizedField,
+  content: RichTextField;
+  lead: RichTextField;
 }

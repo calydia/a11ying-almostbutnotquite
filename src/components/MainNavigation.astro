@@ -135,10 +135,10 @@ const menuItems = await fetchApi<MainMenu>({
           :
             <li class="m-2 p-1">
               {menuItem.menuLink &&
-                <a href={`/${lang}/${menuItem.menuLink.pageUrl}/`}
+                <a href={`/${lang}/${menuItem.menuLink.value.pageUrl}/`}
                   class="text-lg"
                 >
-                  { menuItem.menuLink.title }
+                  { menuItem.menuLink.value.title }
                 </a>
               }
             </li>

@@ -1,9 +1,9 @@
 ---
 import fetchApi from '../lib/payload';
-import type { NotFound } from '../interfaces/notFound';
+import type NotFound from '../interfaces/notFound';
 import Layout from '../layouts/Layout.astro';
 import RichText from '../components/RichText';
-import type { RichTextNode } from '../interfaces/RichText';
+import type RichTextNode from '../interfaces/RichText';
 
 import { getLangFromUrl } from '../i18n/utils';
 const lang = getLangFromUrl(Astro.url);
@@ -26,7 +26,7 @@ if (lang === 'fi') {
   notFound = notFoundFi;
 }
 
-const nodes = notFound.content.root.children as RichTextNode[];
+const nodes = notFound.content?.root.children as RichTextNode[];
 ---
 
 <Layout title={ notFound.title } locale={ lang }

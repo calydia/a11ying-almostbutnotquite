@@ -5,8 +5,8 @@ import Guidelines from '../../../components/Guidelines.astro';
 import SidebarMenu from '../../../components/SidebarMenu.astro';
 import Breadcrumb from '../../../components/Breadcrumb.astro';
 import RichText from '../../../components/RichText';
-
-import type Principle from '../../../interfaces/wcag';
+import type RichTextNode from '../../../interfaces/RichText';
+import type { Principle } from '../../../interfaces/wcag';
 
 export async function getStaticPaths() {
   const pages = await fetchApi<Principle[]>({
@@ -15,7 +15,7 @@ export async function getStaticPaths() {
     wrappedByKey: 'docs',
   });
 
-  const languages = ['en', 'fi'];
+  const languages = ['en', 'fi'] as const;
 
   return pages.flatMap((page: Principle) =>
     languages.map((lang) => ({
@@ -31,10 +31,11 @@ export async function getStaticPaths() {
   );
 }
 
-type Props = Principle;
-
-const page = Astro.props;
-const lang = page.lang;
+type LangKey = 'en' | 'fi';
+interface Props extends Principle {
+  lang: LangKey;
+}
+const { lang, ...page } = Astro.props as Props;
 
 const nodes = (page.content[lang]) ? page.content[lang].root.children as RichTextNode[] : null;
 ---

@@ -33,7 +33,9 @@ export const ui = {
     'site-front-link': ' Almost, but not quite site front page',
     'wcag-level': 'Conformance level:',
     'wcag-version': 'Criterion released in WCAG version:',
-    'sitemap-title-wcag': 'Sitemap: WCAG'
+    'sitemap-title-wcag': 'Sitemap: WCAG',
+    'search-block-label': 'Go to search page',
+    'sidebar-menu-title': 'Sidebar menu'
   },
   fi: {
     'site-name': 'Melkein, mutta ei ihan',
@@ -62,6 +64,8 @@ export const ui = {
     'site-front-link': 'Melkein, mutta ei ihan -sivuston etusivu',
     'wcag-level': 'Onnistumiskriteerin taso:',
     'wcag-version': 'Kriteeri tuli WCAG:n versiossa:',
-    'sitemap-title-wcag': 'Sivukartta: WCAG'
+    'sitemap-title-wcag': 'Sivukartta: WCAG',
+    'search-block-label': 'Siirry hakusivulle',
+    'sidebar-menu-title': 'Sivuvalikko'
   },
 } as const;

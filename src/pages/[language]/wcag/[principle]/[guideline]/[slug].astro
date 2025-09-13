@@ -4,9 +4,9 @@ import Layout from '../../../../../layouts/Layout.astro';
 import RichText from '../../../../../components/RichText';
 import SidebarMenu from '../../../../../components/SidebarMenu.astro';
 import Breadcrumb from '../../../../../components/Breadcrumb.astro';
-
 import { useTranslations } from '../../../../../i18n/utils';
-import type Criterion from '../../../../../interfaces/wcag';
+import type RichTextNode from '../../../../../interfaces/RichText';
+import type { Criterion } from '../../../../../interfaces/wcag';
 
 export async function getStaticPaths() {
   const pages = await fetchApi<Criterion[]>({
@@ -15,7 +15,7 @@ export async function getStaticPaths() {
     wrappedByKey: 'docs',
   });
 
-  const languages = ['en', 'fi'];
+  const languages = ['en', 'fi'] as const;
 
   return pages.flatMap((page: Criterion) =>
     languages.map((lang) => ({
@@ -34,10 +34,12 @@ export async function getStaticPaths() {
   );
 }
 
-type Props = Criterion;
+type LangKey = 'en' | 'fi';
+interface Props extends Criterion {
+  lang: LangKey;
+}
+const { lang, ...page } = Astro.props as Props;
 
-const page = Astro.props;
-const lang = page.lang;
 const t = useTranslations(lang);
 
 const nodes = (page.content[lang]) ? page.content[lang].root.children as RichTextNode[] : null;

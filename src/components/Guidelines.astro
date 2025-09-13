@@ -1,8 +1,9 @@
 ---
 import fetchApi from '../lib/payload';
-import type Guideline from '../interfaces/wcag';
 import Criteria from './Criteria.astro';
 import RichText from './RichText';
+import type RichTextNode from '../interfaces/RichText';
+import type { Guideline } from '../interfaces/wcag';
 
 const guidelines = await fetchApi<Guideline[]>({
   endpoint: 'guidelines',
@@ -17,6 +18,7 @@ const filterdedGuidelines = guidelines.filter((guideline: Guideline) => guidelin
 <section>
   {filterdedGuidelines.map((guideline) => {
     const nodes = (guideline.content) ? guideline.content.root.children as RichTextNode[] : null;
+
     return (
       <div>
         <h2>{ guideline.guidelineNumber } { guideline.title }</h2>
