@@ -1,6 +1,6 @@
 ---
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
-import type { MainMenu, MainMenuItem, FooterMenu} from '../interfaces/menuInterfaces';
+import type { MainMenuItem, FooterMenuItem } from '../interfaces/menuInterfaces';
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
@@ -97,7 +97,7 @@ const infoMenuItems = await infoMenu.json();
 <h2>{ t('name-info-menu') }</h2>
 <div>
   <ul class="ml-8 list-disc">
-    {infoMenuItems.navigationLinks.map((menuItem: MainMenuItem, index: number) => {
+    {infoMenuItems.navigationLinks.map((menuItem: FooterMenuItem, index: number) => {
       const ariaCurrentPageTop = (asPath === menuItem.menuLink?.pageUrl) ? 'page' : undefined;
       const activeClassTop = (asPath === menuItem.menuLink?.pageUrl) ? 'active-link': 'non-active-link';
 
