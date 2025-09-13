@@ -2,9 +2,9 @@
 import fetchApi from '../lib/payload';
 import type { Principle } from '../interfaces/wcag';
 import HumanSitemapGuidelines from './HumanSitemapGuidelines.astro';
-import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import { useTranslations } from '../i18n/utils';
 
-const lang = getLangFromUrl(Astro.url);
+const lang = Astro.props.lang;
 const t = useTranslations(lang);
 
 const principles = await fetchApi<Principle[]>({

@@ -5,7 +5,8 @@ import RichText from '../../components/RichText';
 import type RichTextNode from '../../interfaces/RichText';
 import { useTranslations } from '../../i18n/utils';
 import Layout from '../../layouts/Layout.astro';
-import HumanSitemapPrinciples from '../../components/HumanSitemapPrinciples.astro'
+import HumanSitemapPrinciples from '../../components/HumanSitemapPrinciples.astro';
+import HumanSitemap from '../../components/HumanSitemap.astro';
 
 export async function getStaticPaths() {
   const pages = await fetchApi<Page[]>({
@@ -62,7 +63,8 @@ const leadNodes = (page.lead[lang]) ? page.lead[lang].root.children as RichTextN
     
     { (page.slug[lang] === "sitemap" || page.slug[lang] === 'sivukartta') ?
         <h2>WCAG</h2>
-        <HumanSitemapPrinciples />
+        <HumanSitemapPrinciples lang={ lang } />
+        <HumanSitemap locale={ lang } />
       : null }
     </div>
   </div>
