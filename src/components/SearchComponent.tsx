@@ -135,7 +135,7 @@ export default function SearchComponent({ searchLabel, searchButton, searchMainH
 
   const GetSearchResults = async (searchWords: string) => {
     try {
-      searchDocs(searchWords, 'en');
+      searchDocs(searchWords, searchLocale);
     }
     catch (e) {
       console.error(e);

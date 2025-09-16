@@ -5,7 +5,7 @@ import { Icon } from 'astro-icon/components';
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-const searchUrl = (Astro.props.locale == 'en') ? '/en/search/' : '/fi/haku/';
+const searchUrl = (lang == 'en') ? '/en/search/' : '/fi/haku/';
 ---
 
 <div id="search-a" class="text-black dark:text-white px-3 relative">
