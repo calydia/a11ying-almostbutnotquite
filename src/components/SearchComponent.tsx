@@ -129,6 +129,7 @@ export default function SearchComponent({ searchLabel, searchButton, searchMainH
       searchString: stringify(queryObj),
     });
 
+    console.log(searchItems);
     setSearchPageResult(searchItems);
     setTotalEstimatedHits(searchItems.totalDocs)
   };
@@ -176,6 +177,7 @@ export default function SearchComponent({ searchLabel, searchButton, searchMainH
         <>
           <ul>
             {searchPageResult.docs.map((result: SearchResults, index: number) => {
+              console.log(result);
               const siteName = getSiteName(result.doc.relationTo, searchLocale);
               const contentType = getContentType(result.doc.relationTo, searchLocale);
               const siteUrl = getSiteUrl(result.doc.relationTo);
@@ -199,7 +201,7 @@ export default function SearchComponent({ searchLabel, searchButton, searchMainH
       : null }
 
       {(totalEstimatedHits as number == 0) ?
-      <p>No results.</p>
+      <p>{ searchNoResults }</p>
       : null}
     </div>
     </div>
