@@ -1,18 +1,25 @@
 ---
+import fetchApi from '../lib/payload';
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
-import type { MainMenuItem, FooterMenuItem } from '../interfaces/menuInterfaces';
+import type { MainMenuItem, FooterMenuItem, FooterMenu, MainMenu } from '../interfaces/menuInterfaces';
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
 const asPath = Astro.props.currentUrl;
 
-const fetchUrl = (Astro.props.locale == 'en') ? 'http://localhost:3000/api/globals/ReqNav?depth=2&draft=false&locale=en&trash=false' : 'http://localhost:3000/api/globals/ReqNav?depth=2&draft=false&locale=fi&trash=false';
-const mainMenu = await fetch(fetchUrl);
-const mainMenuItems = await mainMenu.json();
+const mainMenuItems = await fetchApi<MainMenu>({
+  endpoint: 'ReqNav',
+  global: true,
+  menu: true,
+  lang: Astro.props.locale,
+});
 
-const infoFetchUrl = (Astro.props.locale == 'en') ? 'http://localhost:3000/api/globals/ReqFooterNav?depth=2&draft=false&locale=en&trash=false' : 'http://localhost:3000/api/globals/ReqFooterNav?depth=2&draft=false&locale=fi&trash=false';
-const infoMenu = await fetch(infoFetchUrl);
-const infoMenuItems = await infoMenu.json();
+const infoMenuItems = await fetchApi<FooterMenu>({
+  endpoint: 'ReqFooterNav',
+  global: true,
+  menu: true,
+  lang: Astro.props.locale,
+});
 ---
 
 <h2>{ t('name-main-menu') }</h2>
