@@ -7,6 +7,7 @@ import { useTranslations } from '../../i18n/utils';
 import Layout from '../../layouts/Layout.astro';
 import HumanSitemapPrinciples from '../../components/HumanSitemapPrinciples.astro';
 import HumanSitemap from '../../components/HumanSitemap.astro';
+import Terminology from '../../components/Terminology.astro';
 
 export async function getStaticPaths() {
   const pages = await fetchApi<Page[]>({
@@ -61,11 +62,16 @@ const leadNodes = (page.lead[lang]) ? page.lead[lang].root.children as RichTextN
         <div class="text-xl bodytext"><RichText client:load nodes={nodes} lang={lang} withTOC={false} /></div>
       }
     
-    { (page.slug[lang] === "sitemap" || page.slug[lang] === 'sivukartta') ?
-        <h2>WCAG</h2>
-        <HumanSitemapPrinciples lang={ lang } />
-        <HumanSitemap locale={ lang } />
+      { (page.slug[lang] === "sitemap" || page.slug[lang] === 'sivukartta') ?
+          <h2>WCAG</h2>
+          <HumanSitemapPrinciples lang={ lang } />
+          <HumanSitemap locale={ lang } />
+        : null }
+
+    { (page.slug[lang] === "wcag-terminology" || page.slug[lang] === 'wcag-termistoa') ?
+        <Terminology currentLang={ lang } />
       : null }
+
     </div>
   </div>
 </Layout>
