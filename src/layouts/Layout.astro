@@ -41,7 +41,19 @@ const gridClass = (currentType !== "front" && currentUrl.includes('info/') === f
     <link rel="shortcut icon" href="/favicons/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/favicons/favicon.ico" type="image/x-icon">
     <link rel="manifest" href="/manifest.json">
-    <link rel="sitemap" href="/sitemap-index.xml" />  
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    { (type == "front" && locale == 'en') ?
+      <meta property="og:url" content="https://wcag.a11y.ing/en/" />
+      <link rel="canonical" href="https://wcag.a11y.ing/en/" />
+    : null }
+    { (type == "front" && locale == 'fi') ?
+      <meta property="og:url" content="https://wcag.a11y.ing/fi/" />
+      <link rel="canonical" href="https://wcag.a11y.ing/fi/" />
+    : null }
+    { (type !== "front") ?
+    <meta property="og:url" content={`https://wcag.a11y.ing/${locale}/${currentUrl}/`} />
+    <link rel="canonical" href={`https://wcag.a11y.ing/${locale}/${currentUrl}/`} />
+    : null }
   </head>
   <body class="font-sans hyphens-auto">
 
