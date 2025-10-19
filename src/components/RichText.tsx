@@ -24,7 +24,7 @@ function collectHeadings(nodes: RichTextNode[]) {
     if (node.type === 'block' && node.fields?.blockType === 'ContentBox') {
       const text = node.fields?.heading?.replace(' ', '-');
       const id = slugify(text) || 'content-box';
-      headings.push({ id, text, level: 'h2' });
+      headings.push({ id, text: node.fields?.heading, level: 'h2' });
     }
 
     node.children?.forEach(walk);
