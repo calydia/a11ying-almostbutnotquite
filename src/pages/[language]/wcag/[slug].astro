@@ -41,7 +41,7 @@ const nodes = (page.content[lang]) ? page.content[lang].root.children as RichTex
 ---
 
 <Layout type="other" metaDescription={ page.metaDescription[lang] } locale={ lang } title={ page.title[lang] }
-engUrl={ page.pageUrl[lang] } fiUrl={ page.pageUrl[lang] } currentUrl={ page.pageUrl[lang] } currentSlug={ page.pageUrl[lang] }
+engUrl={ page.pageUrl['en'] } fiUrl={ page.pageUrl['fi'] } currentUrl={ page.pageUrl[lang] } currentSlug={ page.pageUrl[lang] }
 alternateFi={`fi/${ page.pageUrl['fi'] }`} alternateEn={`en/${ page.pageUrl['en'] }`}
 >
   <SidebarMenu principleNumber={ page.principleNumber } principleName={ page.title[lang] } />
