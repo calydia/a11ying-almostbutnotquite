@@ -6,7 +6,10 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:report": "playwright show-report"
   },
   "dependencies": {
     "@astrojs/react": "^4.3.0",
@@ -19,5 +22,8 @@
     "astro-icon": "^1.1.5",
     "dayjs": "^1.11.18",
     "qs-esm": "^7.0.2"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
   }
 }
