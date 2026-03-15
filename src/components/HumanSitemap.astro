@@ -1,7 +1,8 @@
 ---
 import fetchApi from '../lib/payload';
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
-import type { MainMenuItem, FooterMenuItem, FooterMenu, MainMenu } from '../interfaces/menuInterfaces';
+import type { MainMenuItem, MainMenu } from '../interfaces/menuInterfaces';
+import type { FooterMenuItem, FooterMenu } from 'a11ying-ui';
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
