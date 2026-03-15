@@ -4,8 +4,8 @@ import Layout from '../../../layouts/Layout.astro';
 import Guidelines from '../../../components/Guidelines.astro';
 import SidebarMenu from '../../../components/SidebarMenu.astro';
 import Breadcrumb from '../../../components/Breadcrumb.astro';
-import RichText from '../../../components/RichText';
-import type RichTextNode from '../../../interfaces/RichText';
+import { RichText } from 'a11ying-ui';
+import type { RichTextNode } from 'a11ying-ui';
 import type { Principle } from '../../../interfaces/wcag';
 
 export async function getStaticPaths() {
