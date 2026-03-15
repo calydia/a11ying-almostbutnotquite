@@ -1,5 +1,5 @@
 ---
-import ThemeToggle from '../components/ThemeToggle.astro';
+import { ThemeToggle } from 'a11ying-ui';
 import LanguageSwitcher from '../components/LanguageSwitcher.astro';
 import { SkipLink } from 'a11ying-ui';
 import MainNavigation from '../components/MainNavigation.astro';
@@ -54,6 +54,17 @@ const gridClass = (currentType !== "front" && currentUrl.includes('info/') === f
     <meta property="og:url" content={`https://wcag.a11y.ing/${locale}/${currentUrl}/`} />
     <link rel="canonical" href={`https://wcag.a11y.ing/${locale}/${currentUrl}/`} />
     : null }
+    <script is:inline>
+      (function() {
+        var stored = localStorage.getItem('darkMode');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (stored === 'enabled' || (!stored && prefersDark)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.add('light');
+        }
+      })();
+    </script>
   </head>
   <body class="font-sans hyphens-auto">
 
@@ -63,7 +74,7 @@ const gridClass = (currentType !== "front" && currentUrl.includes('info/') === f
       <div class="flex flex-wrap justify-end gap-1">
         <SearchBlock locale={locale} />
         <LanguageSwitcher englishURL={ engUrl } finnishURL={ fiUrl } currentPage={ currentUrl } type={ type } />
-        <ThemeToggle />
+        <ThemeToggle darkLabel={t('theme-toggle-text-dark')} lightLabel={t('theme-toggle-text-light')} client:load />
       </div>
       <div class="max-w-4xl mx-auto flex flex-wrap items-center justify-center gap-3 clear-both md:gap-8 lg:clear:none">
         <a href={`/${locale}/`} class="inline-block border-y-4 border-transparent p-2
