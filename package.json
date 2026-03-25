@@ -12,17 +12,18 @@
     "test:report": "playwright show-report"
   },
   "dependencies": {
-    "@astrojs/react": "^4.3.0",
+    "@astrojs/react": "^5.0.1",
     "@astrojs/sitemap": "^3.5.1",
-    "@astrojs/tailwind": "^6.0.2",
     "@fontsource/atkinson-hyperlegible": "^5.2.6",
     "@fontsource/lato": "^5.2.6",
     "@fontsource/satisfy": "^5.2.6",
-    "a11ying-ui": "github:calydia/a11ying-ui#v1.6.1",
-    "astro": "^5.13.3",
+    "@tailwindcss/vite": "^4.2.2",
+    "a11ying-ui": "github:calydia/a11ying-ui#v2.0.2",
+    "astro": "^6.0.8",
     "astro-icon": "^1.1.5",
     "dayjs": "^1.11.18",
-    "qs-esm": "^7.0.2"
+    "qs-esm": "^7.0.2",
+    "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2"

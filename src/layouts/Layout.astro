@@ -10,6 +10,7 @@ import { useTranslations } from '../i18n/utils';
 import '@fontsource/satisfy';
 import '@fontsource/atkinson-hyperlegible';
 import '@fontsource/lato';
+import 'a11ying-ui/styles';
 
 const { title, locale, metaDescription, engUrl, fiUrl, currentUrl, type, currentType } = Astro.props
 
@@ -103,9 +104,8 @@ const gridClass = (currentType !== "front" && currentUrl.includes('info/') === f
 </html>
 
 <style is:global>
-  @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
+  @reference 'a11ying-ui/styles';
+  @source "../../node_modules/a11ying-ui/src";
 
   :root {
     --quote-icon: url('/icons/iconmonstr-quote-light.svg');
@@ -124,6 +124,7 @@ const gridClass = (currentType !== "front" && currentUrl.includes('info/') === f
     --menu-header-background: rgba(255,255,255,0.4);
   }
 
+  @layer base {
   .light .main-image--overlay {
     background-color: rgba(230, 200, 252, 0.2);
     background: linear-gradient(to right, rgba(187, 201, 247, 0.4) 0%, rgba(230,202, 252, 0.4) 50%, rgba(187, 201, 247, 0.4) 100%);
@@ -248,7 +249,14 @@ const gridClass = (currentType !== "front" && currentUrl.includes('info/') === f
   h4::before {
     content: '';
 
-    @apply bg-lt-perfume dark:bg-dk-purple-header absolute block z-[-1] bottom-0 w-10 h-2.5;
+    @apply bg-lt-perfume absolute block z-[-1] bottom-0 w-10 h-2.5;
+  }
+
+  .dark h1::before,
+  .dark h2::before,
+  .dark h3::before,
+  .dark h4::before {
+    background-color: var(--color-dk-purple-header);
   }
   .search-heading::before,
   .a11y-heading::before {
@@ -293,6 +301,27 @@ const gridClass = (currentType !== "front" && currentUrl.includes('info/') === f
 
   main {
     @apply text-lg lg:text-xl;
+  }
+
+  .breadcrumb ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .breadcrumb li {
+    display: inline;
+  }
+
+  .breadcrumb li span[aria-hidden] {
+    margin-inline: 0.5rem;
+  }
+
+  /* Icon container horizontal padding (px-3 from a11ying-ui components) */
+  #search-a,
+  #language-switcher,
+  #theme-toggle-button {
+    padding-inline: 0.75rem;
   }
 
   .breadcrumb a,
@@ -412,6 +441,11 @@ const gridClass = (currentType !== "front" && currentUrl.includes('info/') === f
     @apply bg-lt-blue-dark text-white border-4 border-transparent dark:bg-dk-blue-light dark:text-black py-3 px-5;
     @apply hover:border-4 hover:border-lt-blue-dark hover:bg-transparent hover:text-lt-blue-dark dark:hover:text-dk-blue-light dark:hover:border-dk-blue-light;
     @apply focus:outline focus:outline-2 focus:outline-offset-4 focus:outline-black dark:focus:outline-white;
+  }
+
+  /* Accordion criteria list: ensure disc bullets are visible */
+  .accordion-content ul {
+    list-style-type: disc;
   }
 
   .button--alternative {
@@ -644,7 +678,7 @@ const gridClass = (currentType !== "front" && currentUrl.includes('info/') === f
   }
 
   .box-bordered {
-    @apply relative bodytext mt-12 p-8-px md:my-12 text-base border-solid border-4 bg-lt-code-bg border-lt-code-border dark:bg-dk-code-bg dark:border-dk-code-border shadow-xl
+    @apply relative mt-12 p-8-px md:my-12 text-base border-solid border-4 bg-lt-code-bg border-lt-code-border dark:bg-dk-code-bg dark:border-dk-code-border shadow-xl
   }
 
   .box-underlined h2 {
@@ -656,7 +690,7 @@ const gridClass = (currentType !== "front" && currentUrl.includes('info/') === f
   }
 
   .box-underlined .content-box--inner-wrapper {
-    @apply text-xl bodytext p-4-px lg:p-8-px border-t-4;
+    @apply text-xl p-4-px lg:p-8-px border-t-4;
 
     border-image: linear-gradient(to right, #46037e 0%, RoyalBlue 50%, #46037e 100%);
     border-image-slice: 1;
@@ -672,6 +706,16 @@ const gridClass = (currentType !== "front" && currentUrl.includes('info/') === f
 
   .details-content {
     @apply mt-4;
+  }
+
+  .details-content ul,
+  .details-content ol {
+    @apply ml-5 mb-4 leading-loose;
+    list-style-type: disc;
+  }
+
+  .details-content ol {
+    list-style-type: decimal;
   }
 
   .details-content p:last-of-type {
@@ -706,6 +750,25 @@ const gridClass = (currentType !== "front" && currentUrl.includes('info/') === f
 
   .box-content p:last-of-type {
     @apply mb-0;
+  }
+  } /* end @layer base */
+
+  /* Unlayered: restore margin-left that m-0 utility (in @layer utilities) wipes out */
+  .accordion-content ul {
+    margin-left: 1.25rem;
+  }
+
+  /* Unlayered: overrides @layer utilities (flex-col) on desktop */
+  @media (min-width: 768px) {
+    #site-search {
+      flex-direction: row;
+      align-items: center;
+      row-gap: 0.5rem;
+      column-gap: 1.5rem;
+    }
+    #site-search input[type="text"] {
+      max-width: 24rem;
+    }
   }
 
 </style>

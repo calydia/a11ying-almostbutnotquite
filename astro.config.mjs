@@ -2,7 +2,7 @@
 import { defineConfig } from 'astro/config';
 import sitemap from "@astrojs/sitemap";
 import react from '@astrojs/react';
-import tailwind from "@astrojs/tailwind";
+import tailwindcss from "@tailwindcss/vite";
 import icon from "astro-icon";
 
 // https://astro.build/config
@@ -17,7 +17,10 @@ export default defineConfig({
         fi: 'fi'
       }
     }
-  }), tailwind(), react(), icon()],
+  }), react(), icon()],
+  vite: {
+    plugins: [tailwindcss()],
+  },
   redirects: {
     "/en/perceivable": "/en/wcag/perceivable",
     "/en/operable": "/en/wcag/operable",
