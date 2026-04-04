@@ -12,17 +12,104 @@ import '@fontsource/atkinson-hyperlegible';
 import '@fontsource/lato';
 import 'a11ying-ui/styles';
 
-const { title, locale, metaDescription, engUrl, fiUrl, currentUrl, type, currentType } = Astro.props
+const {
+  title,
+  locale,
+  metaDescription,
+  engUrl,
+  fiUrl,
+  currentUrl,
+  type,
+  currentType,
+  schemaNodes = [],
+} = Astro.props
 
 const t = useTranslations(locale);
 
 const gridClass = (currentType !== "front" && currentUrl.includes('info/') === false && currentUrl.includes('search') === false && currentUrl.includes('haku') === false) ? 'use-grid' : 'no-grid';
+const siteUrl = 'https://wcag.a11y.ing';
+const absoluteOgImage = `${siteUrl}/some-share.jpeg`;
+const localeMap = {
+  en: 'en_US',
+  fi: 'fi_FI',
+} as const;
+
+function buildPagePath(targetLocale: 'en' | 'fi', pageType: string, pageUrl: string) {
+  if (pageType === 'front') {
+    return `/${targetLocale}/`;
+  }
+
+  return `/${targetLocale}/${pageUrl}/`;
+}
+
+function toAbsoluteUrl(path: string) {
+  return new URL(path, siteUrl).toString();
+}
+
+function buildTitle(pageType: string, pageTitle: string) {
+  if (pageType === 'front') {
+    return `WCAG Guide | ${pageTitle}`;
+  }
+
+  if (pageType === 'search') {
+    return `${pageTitle} | WCAG Guide`;
+  }
+
+  return `${pageTitle} | WCAG Guide`;
+}
+
+const canonicalPath = buildPagePath(locale, type, currentUrl);
+const canonicalUrl = toAbsoluteUrl(canonicalPath);
+const englishUrl = engUrl ? toAbsoluteUrl(buildPagePath('en', type, engUrl)) : null;
+const finnishUrl = fiUrl ? toAbsoluteUrl(buildPagePath('fi', type, fiUrl)) : null;
+const xDefaultUrl = englishUrl ?? canonicalUrl;
+const robotsContent = type === 'search' ? 'noindex,follow' : 'index,follow';
+const siteName = t('site-name');
+const parentBrandName = 'A11ying with Sanna';
+const frontTitle = title === siteName ? `${siteName} | ${t('site-slogan')}` : `${siteName} | ${title}`;
+const pageTitle = type === 'front' ? frontTitle : buildTitle(type, title).replace('WCAG Guide', siteName);
+const schemaGraph = [
+  {
+    '@type': 'WebSite',
+    '@id': `${siteUrl}/#website`,
+    url: siteUrl,
+    name: siteName,
+    alternateName: parentBrandName,
+    inLanguage: ['en', 'fi'],
+  },
+  {
+    '@type': 'Person',
+    '@id': `${siteUrl}/#person`,
+    name: 'Sanna',
+    url: siteUrl,
+  },
+  {
+    '@type': 'WebPage',
+    '@id': `${canonicalUrl}#webpage`,
+    url: canonicalUrl,
+    name: pageTitle,
+    description: metaDescription,
+    inLanguage: locale,
+    isPartOf: {
+      '@id': `${siteUrl}/#website`,
+    },
+    about: {
+      '@id': `${siteUrl}/#person`,
+    },
+  },
+  ...schemaNodes,
+];
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': schemaGraph,
+};
 ---
 <html lang={ locale }>
   <head>
-    <title>{ title } - { t('site-name') } - A11ying with Sanna</title>
+    <title>{ pageTitle }</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content={robotsContent} />
     <meta property="og:title" content={ title } />
     <meta name="description" content={ metaDescription } />
     <meta
@@ -30,27 +117,31 @@ const gridClass = (currentType !== "front" && currentUrl.includes('info/') === f
       content={ metaDescription }
     />
     <meta property="og:type" content="website" />
-    <meta property="og:locale" content={ locale } />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:locale" content={localeMap[locale]} />
     <meta property="og:site_name" content={ t('site-name') } />
-    <meta property="og:image" content="/some-share.jpeg" />
+    { englishUrl && englishUrl !== canonicalUrl ?
+      <meta property="og:locale:alternate" content={localeMap.en} />
+    : null }
+    { finnishUrl && finnishUrl !== canonicalUrl ?
+      <meta property="og:locale:alternate" content={localeMap.fi} />
+    : null }
+    <meta property="og:image" content={absoluteOgImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <link rel="shortcut icon" href="/favicons/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/favicons/favicon.ico" type="image/x-icon">
     <link rel="manifest" href="/manifest.json">
     <link rel="sitemap" href="/sitemap-index.xml" />
-    { (type == "front" && locale == 'en') ?
-      <meta property="og:url" content="https://wcag.a11y.ing/en/" />
-      <link rel="canonical" href="https://wcag.a11y.ing/en/" />
-    : null }
-    { (type == "front" && locale == 'fi') ?
-      <meta property="og:url" content="https://wcag.a11y.ing/fi/" />
-      <link rel="canonical" href="https://wcag.a11y.ing/fi/" />
-    : null }
-    { (type !== "front") ?
-    <meta property="og:url" content={`https://wcag.a11y.ing/${locale}/${currentUrl}/`} />
-    <link rel="canonical" href={`https://wcag.a11y.ing/${locale}/${currentUrl}/`} />
-    : null }
+    <link rel="canonical" href={canonicalUrl} />
+    {englishUrl ?
+      <link rel="alternate" hreflang="en" href={englishUrl} />
+    : null}
+    {finnishUrl ?
+      <link rel="alternate" hreflang="fi" href={finnishUrl} />
+    : null}
+    <link rel="alternate" hreflang="x-default" href={xDefaultUrl} />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     <script is:inline>
       (function() {
         var stored = localStorage.getItem('darkMode');
@@ -96,10 +187,6 @@ const gridClass = (currentType !== "front" && currentUrl.includes('info/') === f
       <slot />
     </main>
     <Footer currentPage={ currentUrl } locale={ locale } />
-    <div itemscope itemtype="https://schema.org/WebSite">
-      <meta itemprop="url" content="https://wcag.a11y.ing/"/>
-      <meta itemprop="name" content={ t('site-name') } />
-    </div>  
   </body>
 </html>
 
