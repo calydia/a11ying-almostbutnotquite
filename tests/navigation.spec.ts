@@ -36,7 +36,56 @@ test.describe("Language switcher", () => {
 test.describe("Navigation links", () => {
   test("site logo / home link navigates to homepage", async ({ page }) => {
     await page.goto("/en/wcag/");
-    await page.locator("a[href='/en/']").first().click();
+    await page.locator("header a[href='/en/']").filter({ has: page.locator(".logo-dark") }).click();
     await expect(page).toHaveURL("/en/");
+  });
+});
+
+test.describe("Main navigation escape handling", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 900 });
+    await page.goto("/en/");
+    await page.waitForLoadState("networkidle");
+  });
+
+  test("closes the current nested level first, then the parent level on second Escape", async ({ page }) => {
+    const menuToggle = page.locator("#main-menu-toggle");
+    const topButton = page.locator(".menu-button").first();
+    const nestedToggle = page.locator(".menu-button-ul .mobile-menu-toggle").first();
+    const nestedLink = page.locator(".menu-button-ul .menu-lower-level a").first();
+
+    await menuToggle.click();
+    await topButton.click();
+    await nestedToggle.click();
+
+    await nestedLink.focus();
+    await page.keyboard.press("Escape");
+
+    await expect(nestedToggle).toHaveAttribute("aria-expanded", "false");
+    await expect(nestedToggle).toBeFocused();
+
+    await page.keyboard.press("Escape");
+
+    await expect(topButton).toHaveAttribute("aria-expanded", "false");
+    await expect(topButton).toBeFocused();
+  });
+
+  test("closes the open submenu first and the whole menu on second Escape from the top-level button", async ({ page }) => {
+    const menuToggle = page.locator("#main-menu-toggle");
+    const topButton = page.locator(".menu-button").first();
+
+    await menuToggle.click();
+    await topButton.click();
+    await topButton.focus();
+
+    await page.keyboard.press("Escape");
+
+    await expect(topButton).toHaveAttribute("aria-expanded", "false");
+    await expect(topButton).toBeFocused();
+
+    await page.keyboard.press("Escape");
+
+    await expect(menuToggle).toHaveAttribute("aria-expanded", "false");
+    await expect(menuToggle).toBeFocused();
   });
 });
