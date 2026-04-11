@@ -9,6 +9,9 @@ import icon from "astro-icon";
 export default defineConfig({
   site: 'https://wcag.a11y.ing/',
   trailingSlash: 'always',
+  devToolbar: {
+    enabled: false,
+  },
   integrations: [sitemap({
     i18n: {
       defaultLocale: 'en',
@@ -58,4 +61,3 @@ export default defineConfig({
     "/fi/toimintavarma/yhteensopiva": "/fi/wcag/toimintavarma/yhteensopiva",
   }
 });
-

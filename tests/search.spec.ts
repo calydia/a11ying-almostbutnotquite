@@ -24,8 +24,9 @@ test.describe("Search page", () => {
   test("search returns results for a known term", async ({ page }) => {
     await page.goto("/en/search/");
     await page.locator("#search-input").fill("contrast");
+    await page.getByRole("button", { name: "Search" }).click();
     // Wait for results to appear (React async update)
-    await expect(page.locator("[role='search'] li, [role='search'] a").first()).toBeVisible({
+    await expect(page.locator("main li").first()).toBeVisible({
       timeout: 5000,
     });
   });
