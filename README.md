@@ -14,9 +14,10 @@ All commands are run from the root of the project:
 | `npm run preview`         | Preview your build locally, before deploying     |
 | `npm test`                | Run functional/component Playwright tests        |
 | `npm run test:e2e`        | Run functional/component Playwright tests        |
+| `npm run test:a11y`       | Build and run axe accessibility checks           |
 | `npm run test:visual`     | Run visual regression snapshot tests             |
 | `npm run test:visual:update` | Update visual regression snapshots after reviewed visual changes |
 | `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `npm run astro -- --help` | Get help using the Astro CLI                     |
 
-The test commands intentionally cover different risks. Use `test:e2e` for functional checks and `test:visual` for screenshot comparisons.
+The test commands intentionally cover different risks. Use `test:e2e` for functional checks, `test:a11y` for axe scans against the production build, and `test:visual` for screenshot comparisons.
