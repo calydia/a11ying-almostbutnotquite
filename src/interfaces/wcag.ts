@@ -5,9 +5,17 @@ export type LocalizedField = {
   en: string;
 };
 
+export type LocalizedRelation<T> = T & {
+  fi: T;
+  en: T;
+};
+
+export type RichTextContent = { root: { children: RichTextNode[] } };
+
 export type RichTextField = {
-  fi: { root: { children: RichTextNode[] } } | null;
-  en: { root: { children: RichTextNode[] } } | null;
+  fi: RichTextContent | null;
+  en: RichTextContent | null;
+  root: { children: RichTextNode[] };
 };
 export interface Principle {
   slug: LocalizedField,
@@ -24,7 +32,7 @@ export interface Guideline {
   title: LocalizedField,
   metaDescription: LocalizedField,
   content: RichTextField,
-  Principle: Principle,
+  Principle: LocalizedRelation<Principle>,
   guidelineNumber: string
 }
 
@@ -39,6 +47,6 @@ export interface Criterion {
   metaDescription: LocalizedField,
   cardContent: LocalizedField,
   content: RichTextField,
-  Principle: Principle,
-  Guideline: Guideline
+  Principle: LocalizedRelation<Principle>,
+  Guideline: LocalizedRelation<Guideline>
 }
