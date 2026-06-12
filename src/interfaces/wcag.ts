@@ -45,7 +45,7 @@ export interface Criterion {
   pageUrl: LocalizedField,
   title: LocalizedField,
   metaDescription: LocalizedField,
-  cardContent: LocalizedField,
+  cardContent: LocalizedField | string,
   content: RichTextField,
   Principle: LocalizedRelation<Principle>,
   Guideline: LocalizedRelation<Guideline>

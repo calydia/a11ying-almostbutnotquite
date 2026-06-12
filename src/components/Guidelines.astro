@@ -23,7 +23,7 @@ const filterdedGuidelines = guidelines.filter((guideline: Guideline) => guidelin
       <div>
         <h2>{ guideline.guidelineNumber } { guideline.title }</h2>
         {nodes &&
-          <div class="text-xl bodytext"><RichText client:load nodes={nodes} lang={Astro.props.lang} /></div>
+          <div class="text-xl bodytext"><RichText nodes={nodes} lang={Astro.props.lang} /></div>
         }
         <Criteria principleNumber={ Astro.props.principleNumber } guidelineNumber={ guideline.guidelineNumber } />
       </div>

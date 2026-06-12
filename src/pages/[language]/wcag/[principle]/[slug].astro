@@ -60,11 +60,10 @@ alternateFi={`fi/${ page.pageUrl['fi'] }`} alternateEn={`en/${ page.pageUrl['en'
       />
       <h1 id="skip-target">{ page.guidelineNumber } { page.title[lang] }</h1>
       {nodes &&
-        <div class="text-xl bodytext"><RichText client:load nodes={nodes} lang={lang} /></div>
+        <div class="text-xl bodytext"><RichText nodes={nodes} lang={lang} /></div>
       }
       <Criteria principleNumber={ page.Principle[lang].principleNumber } guidelineNumber={ page.guidelineNumber } linkLevel="two" />
     </div>
   </div>
 </Layout>
-
 

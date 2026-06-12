@@ -69,7 +69,7 @@ const nodes = (page.content[lang]) ? page.content[lang].root.children as RichTex
         <div>{ t('wcag-version') } { page.wcagVersion }</div>
 
       {nodes &&
-        <div class="text-xl bodytext"><RichText client:load nodes={nodes} lang={lang} /></div>
+        <div class="text-xl bodytext"><RichText nodes={nodes} lang={lang} /></div>
       }
       </div>
     </div>
