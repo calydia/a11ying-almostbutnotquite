@@ -93,6 +93,7 @@ export function createPayloadClient(
       url.searchParams.delete('limit');
       url.searchParams.delete('sort');
       mergeSearchParams(url.searchParams, searchString);
+      url.searchParams.set('locale', localeFor(lang));
       url.searchParams.set('pagination', 'false');
     }
 

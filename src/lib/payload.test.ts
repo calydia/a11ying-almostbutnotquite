@@ -84,10 +84,11 @@ describe('createPayloadClient', () => {
       endpoint: 'search',
       global: false,
       lang: 'en',
-      searchString: 'where%5Btitle%5D%5Blike%5D=contrast',
+      searchString: 'where%5Btitle%5D%5Blike%5D=contrast&locale=fi',
     });
     const params = calledUrl(fetchMock).searchParams;
     expect(params.get('where[title][like]')).toBe('contrast');
+    expect(params.get('locale')).toBe('en');
     expect(params.get('pagination')).toBe('false');
     expect(params.has('limit')).toBe(false);
   });
