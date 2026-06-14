@@ -1,4 +1,8 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
+
+async function waitForHydration(page: Page) {
+  await expect(page.locator("astro-island[ssr]")).toHaveCount(0);
+}
 
 test.describe("Skip link", () => {
   test("skip link is the first focusable element", async ({ page }) => {
@@ -20,6 +24,7 @@ test.describe("Skip link", () => {
 test.describe("Keyboard navigation", () => {
   test("language menu is keyboard accessible", async ({ page }) => {
     await page.goto("/en/");
+    await waitForHydration(page);
     const button = page.locator("#language-menu-button");
     await button.focus();
     await page.keyboard.press("Enter");
@@ -29,6 +34,7 @@ test.describe("Keyboard navigation", () => {
 
   test("theme toggle is keyboard accessible", async ({ page }) => {
     await page.goto("/en/");
+    await waitForHydration(page);
     const button = page.locator("#theme-toggle-button");
     await button.focus();
     const before = await page.locator("html").evaluate((el) => el.classList.contains("dark"));

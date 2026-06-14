@@ -1,87 +1,163 @@
 interface Props {
   endpoint: string;
-  global: boolean
+  global: boolean;
   wrappedByKey?: string;
   lang?: string;
   menu?: boolean;
-  guideline?: string;
-  principle?: string;
   sort?: string;
   searchString?: string;
 }
 
-/**
- * Fetches data from the Strapi API
- * @param endpoint - The endpoint to fetch from
- * @param wrappedByKey - The key to unwrap the response from
- * @param lang - What languages to fetch
- * @returns
- */
-export default async function fetchApi<T>({
-  endpoint,
-  global,
-  wrappedByKey,
-  lang,
-  menu,
-  sort,
-  searchString
-}: Props): Promise<T> {
-  if (endpoint.startsWith('/')) {
-    endpoint = endpoint.slice(1);
+type FetchApi = <T>(props: Props) => Promise<T>;
+type FetchImplementation = typeof fetch;
+
+const collectionRules: Record<string, { sort: string; limit: string }> = {
+  criteria: { sort: 'criterionSort', limit: '200' },
+  guidelines: { sort: 'guidelineNumber', limit: '200' },
+  principles: { sort: 'principleNumber', limit: '200' },
+};
+
+function normalizeBaseUrl(value: string | undefined): URL {
+  if (!value?.trim()) {
+    throw new Error('PUBLIC_PAYLOAD_URL is missing or empty');
   }
 
-  if (lang) {
-    if ( lang == 'en') {
-      lang = 'locale=en';
-    } else {
-      lang = 'locale=fi';
+  let url: URL;
+  try {
+    url = new URL(value.trim());
+  } catch (error) {
+    throw new Error('PUBLIC_PAYLOAD_URL must be a valid absolute URL', { cause: error });
+  }
+
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+    throw new Error(`PUBLIC_PAYLOAD_URL must use http or https, received ${url.protocol}`);
+  }
+
+  url.search = '';
+  url.hash = '';
+  url.pathname = `${url.pathname.replace(/\/+$/, '')}/`;
+  return url;
+}
+
+function normalizeEndpoint(endpoint: string): string {
+  return endpoint.replace(/^\/+/, '');
+}
+
+function localeFor(lang?: string): string {
+  return lang === 'en' ? 'en' : lang === 'fi' ? 'fi' : '*';
+}
+
+function mergeSearchParams(target: URLSearchParams, searchString?: string): void {
+  if (!searchString) return;
+  new URLSearchParams(searchString).forEach((value, key) => target.set(key, value));
+}
+
+export function createPayloadClient(
+  baseUrlValue: string | undefined,
+  fetchImplementation: FetchImplementation = fetch
+): FetchApi {
+  const baseUrl = normalizeBaseUrl(baseUrlValue);
+  const requests = new Map<string, Promise<unknown>>();
+
+  return async function fetchApi<T>({
+    endpoint,
+    global,
+    wrappedByKey,
+    lang,
+    menu,
+    sort,
+    searchString,
+  }: Props): Promise<T> {
+    const normalizedEndpoint = normalizeEndpoint(endpoint);
+    const isGlobal = global || menu;
+    const url = new URL(baseUrl);
+    const basePath = baseUrl.pathname.replace(/\/+$/, '');
+    url.pathname = `${basePath}/api/${isGlobal ? 'globals/' : ''}${normalizedEndpoint}`;
+    url.searchParams.set('locale', localeFor(lang));
+
+    if (menu) {
+      url.searchParams.set('depth', '2');
+      url.searchParams.set('draft', 'false');
+      url.searchParams.set('trash', 'false');
+    } else if (!isGlobal) {
+      const endpointRule = collectionRules[normalizedEndpoint];
+      url.searchParams.set('limit', endpointRule?.limit ?? '2000');
+      if (endpointRule) {
+        url.searchParams.set('sort', endpointRule.sort);
+      } else if (sort) {
+        url.searchParams.set('sort', sort);
+      }
     }
-  } else {
-    lang = 'locale=*';
-  }
 
-  let sortValue = '';
-  if (sort) {
-    sortValue = '&sort' + sort;
-  }
+    if (normalizedEndpoint === 'search') {
+      url.searchParams.delete('limit');
+      url.searchParams.delete('sort');
+      mergeSearchParams(url.searchParams, searchString);
+      url.searchParams.set('pagination', 'false');
+    }
 
-  let url = new URL(`${import.meta.env.PUBLIC_PAYLOAD_URL}/api/${endpoint}?${lang}${sortValue}&limit="2000`);
+    const requestUrl = url.toString();
+    let request = requests.get(requestUrl);
 
-  if (global) {
-    url = new URL(`${import.meta.env.PUBLIC_PAYLOAD_URL}/api/globals/${endpoint}?${lang}`);
-  }
+    if (!request) {
+      request = (async () => {
+        try {
+          const response = await fetchImplementation(requestUrl);
+          if (!response.ok) {
+            throw new Error(
+              `Payload request failed for ${normalizedEndpoint}: ${response.status} ${response.statusText} (${requestUrl})`
+            );
+          }
 
-  if (endpoint == 'criteria') {
-    url = new URL(`${import.meta.env.PUBLIC_PAYLOAD_URL}/api/${endpoint}?${lang}&sort=criterionSort&limit=200`);
-  }
+          try {
+            return await response.json();
+          } catch (error) {
+            throw new Error(
+              `Payload response was not valid JSON for ${normalizedEndpoint} (${requestUrl})`,
+              { cause: error }
+            );
+          }
+        } catch (error) {
+          if (
+            error instanceof Error &&
+            (error.message.startsWith('Payload request failed') ||
+              error.message.startsWith('Payload response was not valid JSON'))
+          ) {
+            throw error;
+          }
+          throw new Error(
+            `Payload request failed for ${normalizedEndpoint} (${requestUrl})`,
+            { cause: error }
+          );
+        }
+      })();
 
-  if (endpoint == 'guidelines') {
-    url = new URL(`${import.meta.env.PUBLIC_PAYLOAD_URL}/api/${endpoint}?${lang}&sort=guidelineNumber&limit=200`);
-  }
+      requests.set(requestUrl, request);
+      request.catch(() => {
+        if (requests.get(requestUrl) === request) requests.delete(requestUrl);
+      });
+    }
 
-    if (endpoint == 'principles') {
-    url = new URL(`${import.meta.env.PUBLIC_PAYLOAD_URL}/api/${endpoint}?${lang}&sort=principleNumber&limit=200`);
-  }
+    const data = await request;
+    if (!wrappedByKey) return data as T;
 
-  if (menu) {
-    url = new URL(`${import.meta.env.PUBLIC_PAYLOAD_URL}/api/globals/${endpoint}?${lang}&depth=2&draft=false&locale=en&trash=false`);
-  }
+    if (
+      typeof data !== 'object' ||
+      data === null ||
+      !Object.prototype.hasOwnProperty.call(data, wrappedByKey)
+    ) {
+      throw new Error(
+        `Payload response for ${normalizedEndpoint} is missing wrapper key "${wrappedByKey}" (${requestUrl})`
+      );
+    }
 
-  if (endpoint == 'search') {
-    url = new URL(`${import.meta.env.PUBLIC_PAYLOAD_URL}/api/${endpoint}?${lang}&${searchString}&pagination=false`);
-  }
+    return (data as Record<string, unknown>)[wrappedByKey] as T;
+  };
+}
 
-  const res = await fetch(url.toString());
+let defaultClient: FetchApi | undefined;
 
-  if (!res.ok) {
-    throw new Error(`Payload request failed for ${endpoint}: ${res.status} ${res.statusText} (${url.toString()})`);
-  }
-
-  let data = await res.json();
-
-  if (wrappedByKey) {
-    data = data[wrappedByKey];
-  }
-
-  return data as T;
+export default function fetchApi<T>(props: Props): Promise<T> {
+  defaultClient ??= createPayloadClient(import.meta.env.PUBLIC_PAYLOAD_URL);
+  return defaultClient<T>(props);
 }

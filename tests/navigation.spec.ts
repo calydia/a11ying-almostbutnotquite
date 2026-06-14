@@ -1,8 +1,13 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
+
+async function waitForHydration(page: Page) {
+  await expect(page.locator("astro-island[ssr]")).toHaveCount(0);
+}
 
 test.describe("Language switcher", () => {
   test("opens language menu on button click", async ({ page }) => {
     await page.goto("/en/");
+    await waitForHydration(page);
     const button = page.locator("#language-menu-button");
     await expect(button).toHaveAttribute("aria-expanded", "false");
     await button.click();
@@ -12,6 +17,7 @@ test.describe("Language switcher", () => {
 
   test("closes language menu when clicking button again", async ({ page }) => {
     await page.goto("/en/");
+    await waitForHydration(page);
     const button = page.locator("#language-menu-button");
     await button.click();
     await button.click();
@@ -20,6 +26,7 @@ test.describe("Language switcher", () => {
 
   test("switches from English to Finnish", async ({ page }) => {
     await page.goto("/en/");
+    await waitForHydration(page);
     await page.locator("#language-menu-button").click();
     await page.locator("#lang-switcher a[hreflang='fi']").click();
     await expect(page).toHaveURL(/\/fi\//);
@@ -27,6 +34,7 @@ test.describe("Language switcher", () => {
 
   test("switches from Finnish to English", async ({ page }) => {
     await page.goto("/fi/");
+    await waitForHydration(page);
     await page.locator("#language-menu-button").click();
     await page.locator("#lang-switcher a[hreflang='en']").click();
     await expect(page).toHaveURL(/\/en\//);
@@ -46,6 +54,7 @@ test.describe("Main navigation escape handling", () => {
     await page.setViewportSize({ width: 375, height: 900 });
     await page.goto("/en/");
     await page.waitForLoadState("networkidle");
+    await waitForHydration(page);
   });
 
   test("closes the current nested level first, then the parent level on second Escape", async ({ page }) => {

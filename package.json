@@ -8,9 +8,10 @@
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
-    "quality": "npm run check && npm run test:e2e && npm run test:a11y && npm run test:visual",
+    "quality": "npm run check && npm run test:unit && npm run test:e2e && npm run test:a11y && npm run test:visual",
     "test": "npm run test:e2e",
     "test:e2e": "playwright test",
+    "test:unit": "vitest run src/lib/payload.test.ts",
     "test:a11y": "npm run build && playwright test --config playwright.a11y.config.ts",
     "test:ui": "playwright test --ui",
     "test:report": "playwright show-report",
@@ -35,7 +36,8 @@
     "@astrojs/check": "^0.9.9",
     "@axe-core/playwright": "^4.11.3",
     "@playwright/test": "^1.59.1",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
   },
   "overrides": {
     "vite": "7.3.2",

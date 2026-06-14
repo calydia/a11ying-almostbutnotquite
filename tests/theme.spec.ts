@@ -1,4 +1,8 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
+
+async function waitForHydration(page: Page) {
+  await expect(page.locator("astro-island[ssr]")).toHaveCount(0);
+}
 
 test.describe("Theme toggle", () => {
   test("dark mode button is present and has aria-pressed", async ({ page }) => {
@@ -10,6 +14,7 @@ test.describe("Theme toggle", () => {
 
   test("clicking theme toggle adds dark class to html element", async ({ page }) => {
     await page.goto("/en/");
+    await waitForHydration(page);
     const html = page.locator("html");
     const button = page.locator("#theme-toggle-button");
 
@@ -25,6 +30,7 @@ test.describe("Theme toggle", () => {
 
   test("theme preference is stored in localStorage", async ({ page }) => {
     await page.goto("/en/");
+    await waitForHydration(page);
     await page.locator("#theme-toggle-button").click();
 
     const darkMode = await page.evaluate(() => localStorage.getItem("darkMode"));
