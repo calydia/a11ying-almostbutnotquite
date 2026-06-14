@@ -1,47 +1,72 @@
-import { test, expect } from "@playwright/test";
+import { expect, test, type Route } from '@playwright/test';
 
-test.describe("Search page", () => {
-  test("renders search input", async ({ page }) => {
-    await page.goto("/en/search/");
-    await expect(page.locator("#search-input")).toBeVisible();
-  });
+function requestQuery(route: Route): string {
+  const requestUrl = decodeURIComponent(route.request().url());
+  return requestUrl.match(/like]=([^&]+)/)?.[1] ?? '';
+}
 
-  test("search input has accessible label", async ({ page }) => {
-    await page.goto("/en/search/");
-    const input = page.locator("#search-input");
-    // Label is associated via htmlFor="search-input"
-    const label = page.locator('label[for="search-input"]');
-    await expect(label).toBeVisible();
-  });
+function searchResponse(query: string) {
+  return {
+    totalDocs: 1,
+    docs: [
+      {
+        title: `${query} result`,
+        searchDescription: `Description for ${query}`,
+        searchPageUrl: `results/${query}`,
+        doc: { relationTo: 'criteria' },
+      },
+    ],
+  };
+}
 
-  test("typing in search input updates the value", async ({ page }) => {
-    await page.goto("/en/search/");
-    const input = page.locator("#search-input");
-    await input.fill("contrast");
-    await expect(input).toHaveValue("contrast");
-  });
+async function waitForSearchHydration(page: import('@playwright/test').Page) {
+  await expect(page.locator('astro-island[ssr]')).toHaveCount(0);
+}
 
-  test("search returns results for a known term", async ({ page }) => {
-    await page.goto("/en/search/");
-    await page.locator("#search-input").fill("contrast");
-    await page.getByRole("button", { name: "Search" }).click();
-    // Wait for results to appear (React async update)
-    await expect(page.locator("main li").first()).toBeVisible({
-      timeout: 5000,
+test.describe('Search page', () => {
+  test('restores URL searches and browser history', async ({ page }) => {
+    await page.route('**/api/search**', async (route) => {
+      const query = requestQuery(route);
+      await route.fulfill({ json: searchResponse(query) });
     });
+
+    await page.goto('/en/search/?q=contrast');
+    const input = page.getByRole('textbox', { name: 'Search for content' });
+    await expect(input).toHaveValue('contrast');
+    await expect(page.getByRole('heading', { name: /contrast result/i })).toBeVisible();
+
+    await input.fill('keyboard');
+    await page.getByRole('button', { name: 'Search' }).click();
+    await expect(input).toBeFocused();
+    await expect(page).toHaveURL(/\/en\/search\/\?q=keyboard$/);
+    await expect(page.getByRole('heading', { name: /keyboard result/i })).toBeVisible();
+
+    await page.goBack();
+    await expect(input).toHaveValue('contrast');
+    await expect(page.getByRole('heading', { name: /contrast result/i })).toBeVisible();
   });
 
-  test("search shows empty state for nonsense query", async ({ page }) => {
-    await page.goto("/en/search/");
-    await page.locator("#search-input").fill("zzzzzzz-no-results-xyzabc");
-    // Should not show any result items
-    await page.waitForTimeout(500);
-    const results = page.locator("[role='search'] li");
-    await expect(results).toHaveCount(0);
-  });
+  test('announces empty and error states in both languages', async ({ page }) => {
+    await page.route('**/api/search**', async (route) => {
+      const query = requestQuery(route);
+      if (query === 'broken') {
+        await route.fulfill({ status: 500, body: 'Search unavailable' });
+        return;
+      }
+      await route.fulfill({ json: { totalDocs: 0, docs: [] } });
+    });
 
-  test("search form has role=search", async ({ page }) => {
-    await page.goto("/en/search/");
-    await expect(page.locator("#site-search")).toHaveAttribute("role", "search");
+    await page.goto('/en/search/');
+    await waitForSearchHydration(page);
+    await page.getByRole('textbox', { name: 'Search for content' }).fill('missing');
+    await page.getByRole('button', { name: 'Search' }).click();
+    await expect(page.getByRole('status')).toHaveText('No results.');
+
+    await page.getByRole('textbox', { name: 'Search for content' }).fill('broken');
+    await page.getByRole('button', { name: 'Search' }).click();
+    await expect(page.getByRole('alert')).toHaveText('Search failed. Please try again.');
+
+    await page.goto('/fi/haku/?q=broken');
+    await expect(page.getByRole('alert')).toHaveText('Haku epäonnistui. Yritä uudelleen.');
   });
 });
