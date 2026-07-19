@@ -17,6 +17,8 @@ The site:
 
 The main runtime input is `PUBLIC_PAYLOAD_URL`. Tests use the configured
 Playwright environment and committed fixtures/snapshots.
+Astro 7 requires Node.js 22.12 or newer; use a compatible Node 22 release for
+local development, CI, and production builds.
 
 ## Related Repositories
 
@@ -99,6 +101,15 @@ npm run quality
 Use the smallest relevant test while iterating. Run `npm run quality` for
 changes to the layout, shared site shell, WCAG hierarchy, navigation, styling
 foundations, shared-component integration, or other broad behavior.
+
+Playwright builds the static site and runs browser tests against `astro
+preview`; it does not use the Astro development server. The suites retain their
+configured Payload data source, and a build or CMS failure must fail the suite
+rather than fall back to another source.
+
+Run this repository's and `a11ying-front`'s browser quality gates sequentially:
+both use port 4321, and `a11ying-front` also uses port 4010. Do not leave a
+separate dev or preview server on those ports while running the tests.
 
 For intentional visual changes:
 
