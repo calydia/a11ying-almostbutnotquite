@@ -1,28 +1,29 @@
 import { test, expect } from "@playwright/test";
+import { gotoExistingPage } from "./helpers";
 
 const routes = [
-  { path: "/en/", description: "English homepage" },
-  { path: "/fi/", description: "Finnish homepage" },
-  { path: "/en/wcag/perceivable/text-alternatives/", description: "WCAG example content (EN)" },
-  { path: "/en/search/", description: "Search page (EN)" },
-  { path: "/fi/haku/", description: "Search page (FI)" },
+  { path: "/en/", description: "English homepage", language: "en" as const },
+  { path: "/fi/", description: "Finnish homepage", language: "fi" as const },
+  { path: "/en/wcag/perceivable/text-alternatives/", description: "WCAG example content (EN)", language: "en" as const },
+  { path: "/en/search/", description: "Search page (EN)", language: "en" as const },
+  { path: "/fi/haku/", description: "Search page (FI)", language: "fi" as const },
 ];
 
-for (const { path, description } of routes) {
+for (const { path, description, language } of routes) {
   test(`loads ${description} (${path})`, async ({ page }) => {
-    const response = await page.goto(path);
-    expect(response?.status()).toBeLessThan(400);
-    await expect(page.locator("body")).toBeVisible();
+    await gotoExistingPage(page, path, { language });
+    await expect(page.getByRole("main")).toBeVisible();
   });
 }
 
 test("unknown route shows 404 page", async ({ page }) => {
   const response = await page.goto("/en/this-page-does-not-exist/");
   expect(response?.status()).toBe(404);
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
 });
 
 test("shared social image metadata uses the A11ying brand image", async ({ page }) => {
-  await page.goto("/en/");
+  await gotoExistingPage(page, "/en/");
 
   await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", "https://wcag.a11y.ing/social-media-share.jpg");
   await expect(page.locator('meta[property="og:image:width"]')).toHaveAttribute("content", "1200");
@@ -35,7 +36,7 @@ test("shared social image metadata uses the A11ying brand image", async ({ page 
 });
 
 test("English footer links to the renewed accessibility blog and Testing Lab", async ({ page }) => {
-  await page.goto("/en/");
+  await gotoExistingPage(page, "/en/");
   const footer = page.locator("footer");
 
   await expect(footer.getByRole("link", { name: "Accessibility blog" })).toHaveAttribute("href", "https://sanna.a11y.ing/blog/accessibility/");
@@ -43,7 +44,7 @@ test("English footer links to the renewed accessibility blog and Testing Lab", a
 });
 
 test("Finnish footer identifies the Testing Lab as English-language content", async ({ page }) => {
-  await page.goto("/fi/");
+  await gotoExistingPage(page, "/fi/", { language: "fi" });
   const footer = page.locator("footer");
   const testingLabLink = footer.getByRole("link", { name: "Accessibility Testing Lab" });
 
@@ -51,5 +52,5 @@ test("Finnish footer identifies the Testing Lab as English-language content", as
   await expect(testingLabLink).toHaveAttribute("href", "https://testing.a11y.ing/");
   await expect(testingLabLink).toHaveAttribute("hreflang", "en");
   await expect(testingLabLink.locator('[lang="en"]')).toHaveText("Accessibility Testing Lab");
-  await expect(testingLabLink.locator('xpath=following-sibling::span[1]')).toHaveText("(englanniksi)");
+  await expect(footer.getByText("(englanniksi)", { exact: true })).toBeVisible();
 });

@@ -1,58 +1,48 @@
-import { test, expect, type Page } from "@playwright/test";
-
-async function waitForHydration(page: Page) {
-  await expect(page.locator("astro-island[ssr]")).toHaveCount(0);
-}
+import { test, expect } from "@playwright/test";
+import { gotoExistingPage, waitForHydration } from "./helpers";
 
 test.describe("Theme toggle", () => {
   test("dark mode button is present and has aria-pressed", async ({ page }) => {
-    await page.goto("/en/");
-    const button = page.locator("#theme-toggle-button");
+    await gotoExistingPage(page, "/en/");
+    const button = page.getByRole("button", { name: /Switch to (dark|light) version/ });
     await expect(button).toBeVisible();
     await expect(button).toHaveAttribute("aria-pressed");
   });
 
-  test("clicking theme toggle adds dark class to html element", async ({ page }) => {
-    await page.goto("/en/");
+  test("clicking the theme toggle switches from light to dark", async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem("darkMode", "disabled"));
+    await gotoExistingPage(page, "/en/");
     await waitForHydration(page);
     const html = page.locator("html");
-    const button = page.locator("#theme-toggle-button");
+    const button = page.getByRole("button", { name: "Switch to dark version" });
 
-    const isDark = await html.evaluate((el) => el.classList.contains("dark"));
+    await expect(html).toHaveClass(/\blight\b/);
     await button.click();
-
-    if (isDark) {
-      await expect(html).not.toHaveClass(/\bdark\b/);
-    } else {
-      await expect(html).toHaveClass(/\bdark\b/);
-    }
+    await expect(html).toHaveClass(/\bdark\b/);
+    await expect(page.getByRole("button", { name: "Switch to light version" })).toHaveAttribute("aria-pressed", "true");
   });
 
   test("theme preference is stored in localStorage", async ({ page }) => {
-    await page.goto("/en/");
+    await page.addInitScript(() => localStorage.setItem("darkMode", "disabled"));
+    await gotoExistingPage(page, "/en/");
     await waitForHydration(page);
-    await page.locator("#theme-toggle-button").click();
+    await page.getByRole("button", { name: "Switch to dark version" }).click();
 
     const darkMode = await page.evaluate(() => localStorage.getItem("darkMode"));
-    expect(["enabled", "disabled"]).toContain(darkMode);
+    expect(darkMode).toBe("enabled");
   });
 
   test("stored dark mode preference is respected on reload", async ({ page }) => {
-    await page.goto("/en/");
-
-    // Force dark mode via localStorage
-    await page.evaluate(() => localStorage.setItem("darkMode", "enabled"));
-    await page.reload();
+    await page.addInitScript(() => localStorage.setItem("darkMode", "enabled"));
+    await gotoExistingPage(page, "/en/");
 
     await expect(page.locator("html")).toHaveClass(/\bdark\b/);
   });
 
   test("stored light mode preference is respected on reload", async ({ page }) => {
-    await page.goto("/en/");
+    await page.addInitScript(() => localStorage.setItem("darkMode", "disabled"));
+    await gotoExistingPage(page, "/en/");
 
-    await page.evaluate(() => localStorage.setItem("darkMode", "disabled"));
-    await page.reload();
-
-    await expect(page.locator("html")).not.toHaveClass(/\bdark\b/);
+    await expect(page.locator("html")).toHaveClass(/\blight\b/);
   });
 });
