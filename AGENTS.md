@@ -22,8 +22,7 @@ skills and practice environments belong in `a11y-testing-astro`.
 
 The main runtime input is `PUBLIC_PAYLOAD_URL`. Tests use the configured
 Playwright environment and committed fixtures/snapshots.
-Astro 7 requires Node.js 22.12 or newer; use a compatible Node 22 release for
-local development, CI, and production builds.
+Use Node.js 24 for local development, CI, and production builds.
 
 ## Related Repositories
 
@@ -102,7 +101,7 @@ tagged-release workflow.
 
 ## Commands
 
-Run commands from this repository root:
+Run commands from this repository root with Node.js 24:
 
 ```bash
 npm install
